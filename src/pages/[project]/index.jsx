@@ -25,10 +25,10 @@ function ProjectLounge({ project }) {
 
       {user?.isLoggedIn && (
         <p className="">
-          <Link href="/api/logout">
+          <Link href="/api/signout">
             <a onClick={async (e) => {
                 e.preventDefault()
-                await mutateUser(fetchJson('/api/logout'))
+                await mutateUser(fetchJson('/api/signout'))
                 router.push('/')
               }} className="bg-indigo-600 border border-indigo-500 rounded py-1 px-3 text-white hover:bg-transparent hover:text-indigo-700">Logout</a>
           </Link>
