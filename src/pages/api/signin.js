@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 export default withSession(async (req, res) => {
   const { username, password, project, path, loginType } = await req.body
   const collection = loginType == 'persona' ? 'personas' : 'project_members'
-  console.log(req.body)
+  console.log("signin.req.body", req.body)
 
   try {
     const { db } = await connect()
