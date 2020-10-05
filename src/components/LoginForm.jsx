@@ -17,7 +17,7 @@ const LoginForm = ({ access, errorMessage, onSubmit }) => (
           <label className="block text-sm font-bold mb-2" htmlFor="username">
             Username
           </label>
-          <input type="text" id="username" name="username" required autoComplete="off"
+          <input type="text" id="username" name="username" required autoFocus autoComplete="off"
           className="appearance-none border rounded w-full py-2 px-3 text-xl text-blue-700 leading-tight focus:outline-none focus:border-purple-500" />
         </div>
         <div className="mb-4">

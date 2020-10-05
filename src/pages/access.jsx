@@ -12,8 +12,8 @@ export default function Access() {
   const { user } = useUser({ redirectTo: false })
 
   // Redirect to persona, guest, expert?
-  // const redirect = user?.role ? user?.projectId + '/' + user?.role : user?.projectId + '/' + user?.type
-  const redirect = user?.projectId
+  const redirect = user?.role ? user?.role : user?.type
+  // const redirect = user?.projectId
 
   // const { mutateUser } = useUser({ redirectTo: user?.path, redirectIfFound: true })
 
