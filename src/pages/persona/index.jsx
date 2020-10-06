@@ -4,7 +4,7 @@ import LayoutPersona from 'components/LayoutPersona'
 import NavPersona from 'components/NavPersona'
 import Persona from 'components/Persona'
 
-export default function PrivatePage() {
+const PrivatePage = () => {
   const { user } = useUser({ redirectTo: '/' })
 
   if (!user || user.isLoggedIn === false) return <Unauthorized/>
@@ -16,3 +16,5 @@ export default function PrivatePage() {
     </LayoutPersona>
   )
 }
+
+export default PrivatePage

@@ -1,11 +1,17 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from 'styles/Home.module.css'
+import useUser from 'lib/useUser'
 
 export default function Home() {
+  const { user } = useUser({ redirectTo: false })
+  const redirect = user?.role ? user?.role : user?.type
+  const { mutateUser } = useUser({ redirectTo: redirect, redirectIfFound: true })
+
+  if (user?.isLoggedIn) return <div></div>
+
   const cls = styles.container + ' bg-gray-100 border-t-4 border-gray-700'
   return (
-    // <div className="h-screen p-4 border-t-4 border-red-600">
     <div className={cls}>
       <Head>
         <title>Invitation Only</title>

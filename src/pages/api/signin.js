@@ -19,11 +19,12 @@ export default withSession(async (req, res) => {
       // console.log(projects)
       const user = loginType == 'persona' ? {
         isLoggedIn: true,
+        _id: person._id,
+        license: person.license,
         projectId: project,
         projectTitle: projects[0].title,
         path: path,
         type: loginType,
-        _id: person._id,
         fullname: person.fullname,
         username: person.username,
         tests: person.tests,
@@ -31,6 +32,7 @@ export default withSession(async (req, res) => {
         simulations: person.simulations,
       } : {
         isLoggedIn: true,
+        license: person.license,
         projectId: project,
         projectTitle: projects[0].title,
         path: path,
@@ -42,6 +44,7 @@ export default withSession(async (req, res) => {
       }
       console.log(user)
       req.session.set('user', user)
+      req.session.set("path", "default-path")
       await req.session.save()
       res.json(user)
     }
@@ -52,3 +55,9 @@ export default withSession(async (req, res) => {
     res.status(404).json({ message: "Username/password salah." })
   }
 })
+
+/*
+You can call session.set("name", "value");
+and await http://session.save() again.
+Is that what you're looking for?
+*/

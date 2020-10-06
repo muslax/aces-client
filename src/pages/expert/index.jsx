@@ -2,7 +2,6 @@ import useUser from 'lib/useUser'
 import Unauthorized from 'components/Unauthorized'
 import LayoutExpert from 'components/LayoutExpert'
 import NavExpert from 'components/NavExpert'
-import Persona from 'components/Persona'
 
 export default function PrivatePage() {
   const { user } = useUser({ redirectTo: '/' })
