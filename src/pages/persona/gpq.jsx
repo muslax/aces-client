@@ -5,7 +5,6 @@ import Unauthorized from 'components/Unauthorized'
 import LayoutPersona from 'components/LayoutPersona'
 import NavPersona from 'components/NavPersona'
 import GPQ from 'components/mod/GPQ'
-import { func } from "prop-types"
 
 /*const PrivatePage = () => {
   const { user } = useUser({ redirectTo: '/' })
@@ -63,7 +62,7 @@ function GPQProvider({ user, children }) {
 
 async function fetchGpq(gpqPart) {
   const response = await fetch(
-    "/api/mod-gpq?seq=120"
+    "/api/mod-gpq?seq=110"
   )
   const data = await response.json()
   return data

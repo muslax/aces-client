@@ -28,8 +28,11 @@ export default function GPQ({ user }) {
     <div className="p-6">
       <h1>GPQ for {user._id}</h1>
       <pre className="text-xs my-6">{JSON.stringify(user, null, 2)}</pre>
-      {/* <pre className="text-xs my-6">{JSON.stringify(firstElms, null, 2)}</pre> */}
+
+      <hr/>
       <pre className="text-xs my-6">{JSON.stringify(evStatus, null, 2)}</pre>
+      <hr/>
+
     </div>
   )
 }

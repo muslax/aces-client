@@ -7,7 +7,7 @@ export default function Unauthorized() {
         <Head>
           <meta name="robots" content="noindex" />
         </Head>
-        <DefaultErrorPage statusCode={404} />
+        <DefaultErrorPage statusCode={401} />
       </div>
   )
 }
