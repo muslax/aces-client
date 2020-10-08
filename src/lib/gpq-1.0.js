@@ -129,6 +129,7 @@ export const firstElms = [
   ["CM","Mudah mengekspresikan gagasan."],
   ["SC","Mudah bangkit dari kekecewaan."],
   ["SD","Mencari cara-cara pengembangan diri yang efektif."],
+  // [null, null] // HACK
 ]
 
 export const secondElms = [
@@ -252,4 +253,5 @@ export const secondElms = [
   ["PS","Memakai beragam pendekatan supaya pendapat pribadi diterima."],
   ["AD","Mencermati perubahan dan menelaah kendala-kendalanya."],
   ["AC","Mengerjakan segala sesuatunya lebih baik dari yang lain."],
+  // [null, null] // HACK
 ]

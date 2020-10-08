@@ -5,7 +5,6 @@ import useSWR from "swr";
 import fetchJson from 'lib/fetchJson'
 import useUser from 'lib/useUser'
 import { firstElms, secondElms } from 'lib/gpq-1.0'
-// import { GPQ_ITEMS } from 'pages/api/ev-gpq'
 
 export default function GPQPage() {
   const { user } = useUser({ redirectTo: "/" })
@@ -48,7 +47,7 @@ function sequenceArray(sequence) {
 }
 
 function PageDetail() {
-  const { user, state } = useContext(ProgressContext)
+  const { user, state, setState } = useContext(ProgressContext)
   const url = "/api/ev-gpq?" + `projectId=${user.projectId}&personaId=${user._id}&license=${user.license}&fullname=${user.fullname}`
   const { data:progress, error, mutate:mutateProgress } = useSWR(url, fetchJson)
 
@@ -58,6 +57,8 @@ function PageDetail() {
     <div className="p-6">
       <UserBar progress={progress} />
 
+      <p>STATE: {state}</p>
+
       {!progress && <div className="my-6 text-center text-gray-400">LOADING</div>}
 
       {error && <div className="my-6 text-center text-gray-400">ERROR LOADING DATA</div>}
@@ -66,24 +67,25 @@ function PageDetail() {
 
       {state == 1 && <Guide progress={progress} mutate={mutateProgress} />}
 
-      {state == 2 && <Steps progress={progress} mutate={mutateProgress} />}
+      {/* {(state > 1 && progress.done < 120) && <Steps progress={progress} mutate={mutateProgress} />} */}
+      {(state > 1 && progress?.done < progress?.items) && <Steps progress={progress} mutate={mutateProgress} />}
 
-      {state == 3 && <div className="text-center text-4xl my-8 font-light">SELESAI</div>}
+      {(progress?.done == progress?.items) && state > 0 && <div className="text-center text-4xl my-8 font-light">SELESAI</div>}
 
       <hr className="mt-16 mb-6"/>
 
       <pre className="w-full overflow-scroll bg-gray-200 p-3 text-xs my-6">PROGRESS {JSON.stringify(progress, null, 2)}</pre>
 
-      <pre className="w-full overflow-scroll bg-gray-200 p-3 text-xs my-6">SESSION {JSON.stringify(user, null, 2)}</pre>
+      {/* <pre className="w-full overflow-scroll bg-gray-200 p-3 text-xs my-6">SESSION {JSON.stringify(user, null, 2)}</pre> */}
     </div>
   )
 }
 
 // const UserBar = ({ user }) => {
 const UserBar = ({ progress }) => {
-  const { user, submitting } = useContext(ProgressContext)
+  const { user, state, submitting } = useContext(ProgressContext)
   const router = useRouter()
-  // const { mutateUser } = useUser({ redirectTo: '/' })
+  const { mutateUser } = useUser({ redirectTo: '/' })
   const dotClass = submitting ? "inline-block border-l text-lg text-red-500 leading-snug px-3 pt-2s" : "inline-block border-l text-lg text-gray-400 leading-snug px-3 pt-2s"
   return (
     <div>
@@ -93,7 +95,7 @@ const UserBar = ({ progress }) => {
       </div>
       <div className="flex flex-row bg-gray-200 items-center rounded borders border-gray-400 text-gray-700 mb-6">
         <p className="px-5 border-r text-gray-800 leading-10 font-bold">{user.fullname}</p>
-        <p className="px-3 border-r bg-gray-300 text-gray-600 leading-10 font-semisbold">{progress.done} / {progress.items}</p>
+        {state > 1 && <p className="px-3 border-r bg-gray-300 text-gray-600 leading-10 font-semisbold">{progress?.done + 1} / {progress?.items}</p>}
         <p className="flex-grow items-center text-sm text-gray-600 leading-10 text-right text-gray-700">
           <span className={dotClass}>◉</span>
           <button className="inline-block border-l text-gray-600 px-4 hover:bg-gray-600 hover:text-white">Pause</button>
@@ -143,6 +145,13 @@ const Welcome = ({ progress, mutate }) => {
       <p className="text-center">
         <button onClick={(event) => { EnterTest(progress) }} className="rounded border border-green-400 text-lg text-green-500 font-bold px-8 py-3 hover:bg-green-500 hover:text-white active:bg-green-700">Lanjut</button>
       </p>
+
+      <p className="text-sm text-center text-red-500 px-6 mt-6">
+        Ketika masuk ke bilik tes, user mendapat informasi apakah saat ini merupakan
+        kali pertama dia akan menjalani tes, atau melanjutkan tes yang terputus
+        sebelumnya. Tombol Lanjut akan mengantarkan dia untuk membuka halaman pertama
+        (pengantar) tes.
+      </p>
     </div>
   )
 }
@@ -172,6 +181,11 @@ const Guide = ({ progress, mutate }) => {
   return (
     <div className="">
       <h1 className="text-2xl text-gray-600 font-light mb-10">Petunjuk Menjalani Test GPQ</h1>
+      <p className="text-sm text-red-500 px-6 my-6">
+        Di sini disajikan petunjuk dan tata tertib menjalani tes, termasuk
+        apa maksud dari Pause dan Logout. Halaman ini harus diperkaya dengan
+        gambar/ilustrasi/screenshot untuk membantu menciptakan seamlessness...
+      </p>
       <p className="mb-4">Elit rhoncus adipiscing facilisis efficitur vitae consectetur orci
       consequat, pellentesque est sem blandit tristique curabitur vulputate
       ultricies, senectus enim risus hac mollis dapibus in magnis, arcu
@@ -184,25 +198,6 @@ const Guide = ({ progress, mutate }) => {
       lacus primis consequat convallis nascetur accumsan, senectus at sem
       lacinia imperdiet conubia fusce auctor, ac urna purus bibendum viverra
       tincidunt blandit duis.</p>
-      <p className="mb-4">Convallis eget fusce justo quam et lectus senectus mi nibh, urna diam
-      tellus finibus pretium in suscipit arcu elementum, ex lobortis maximus
-      venenatis sagittis porta dolor non, eu tempus risus sem maecenas nullam
-      duis condimentum. Eu phasellus at aliquam egestas integer tortor sit
-      turpis tempus, aptent eleifend nullam praesent eget ridiculus varius
-      nostra vitae, volutpat ligula elit mus hendrerit blandit suscipit semper
-      imperdiet, potenti quis dis fames sodales lectus adipiscing aenean.</p>
-      <p className="mb-4">Non ridiculus venenatis conubia felis nascetur fusce vulputate
-      viverra, elit consectetur potenti rutrum proin fringilla ultricies
-      maecenas, sagittis leo blandit platea lacinia mauris massa justo,
-      habitant vestibulum quisque class hendrerit facilisis sociosqu. Euismod
-      aptent placerat integer dictum himenaeos mus hendrerit phasellus,
-      malesuada cras feugiat ex efficitur tortor tristique a, metus posuere
-      scelerisque sollicitudin maximus molestie felis odio vehicula, tellus
-      mattis torquent primis potenti eleifend lorem. Ipsum cursus velit duis
-      molestie sociosqu vehicula luctus congue interdum, sagittis nunc montes
-      pellentesque tristique fermentum imperdiet ornare enim, nascetur
-      scelerisque proin aliquet netus a volutpat facilisi ullamcorper ad,
-      praesent parturient nisl venenatis est lobortis magnis penatibus.</p>
 
       <p className="text-center">
         <button onClick={(event) => { StartTest(progress) }} className="rounded border border-green-400 text-lg text-green-500 font-bold px-8 py-3 hover:bg-green-500 hover:text-white active:bg-green-700">Lanjut</button>
@@ -212,11 +207,11 @@ const Guide = ({ progress, mutate }) => {
 }
 
 const Steps = ({ progress, mutate }) => {
-  const { user, setState, submitting, setSubmitting } = useContext(ProgressContext)
+  const { user, state, setState, submitting, setSubmitting } = useContext(ProgressContext)
 
   const [ elm, setElm ] = useState(null)
   const [ statement, setStatement ] = useState(null)
-  // const [ submitting, setSubmitting ] = useState(false)
+
   const selectedClass = "rounded cursor-pointer bg-blue-500 font-bold text-white p-4 mb-4"
   const normalClass = "rounded cursor-pointer border border-gray-400 text-gray-700 font-sbold p-4 mb-4 hover:border-blue-500"
   const btnNormal = "rounded border-2 border-gray-400 text-xl text-gray-400 tracking-wide font-semibold px-12 py-3"
@@ -225,25 +220,16 @@ const Steps = ({ progress, mutate }) => {
   const sequences = sequenceArray(progress?.sequence)
 
   const select = (n) => {
-    if (progress.done < firstElms.length) {
-      if (!n) {
-        document.getElementById("label2").className = normalClass
-        document.getElementById("label1").className = normalClass
-        document.getElementById("btn").setAttribute('disabled', true)
-        document.getElementById("btn").className = btnNormal
-        setElm(null)
-        setStatement(null)
-      } else {
-        if (n == 'label1') {
-          document.getElementById("label2").className = normalClass
-          document.getElementById("label1").className = selectedClass
-        } else if (n == 'label2') {
-          document.getElementById("label1").className = normalClass
-          document.getElementById("label2").className = selectedClass
-        }
-        document.getElementById("btn").removeAttribute('disabled')
-        document.getElementById("btn").className = btnActive
-      }
+    if (n == 'label1') {
+      document.getElementById("label2").className = normalClass
+      document.getElementById("label1").className = selectedClass
+      document.getElementById("btn").removeAttribute('disabled')
+      document.getElementById("btn").className = btnActive
+    } else if (n == 'label2') {
+      document.getElementById("label1").className = normalClass
+      document.getElementById("label2").className = selectedClass
+      document.getElementById("btn").removeAttribute('disabled')
+      document.getElementById("btn").className = btnActive
     }
   }
 
@@ -252,6 +238,10 @@ const Steps = ({ progress, mutate }) => {
     setSubmitting(true)
     document.getElementById("btn").setAttribute('disabled', true)
     document.getElementById("btn").className = btnNormal
+    document.getElementById("label2").className = normalClass
+    document.getElementById("label1").className = normalClass
+    document.getElementById("_opt").click()
+    document.getElementById('optForm').reset()
 
     const url = "/api/ev-gpq?" + `projectId=${user.projectId}&personaId=${user._id}`
     const body = {
@@ -268,79 +258,66 @@ const Steps = ({ progress, mutate }) => {
       },
       body: JSON.stringify(body),
     })
-    // select(false)
+
+    console.log("RESPONSE.DONE: ", response.done)
     mutate()
 
-    if (progress.done == firstElms.length) {
-      setState(3)
-    }
-
-    if (progress.done < firstElms.length) {
-      document.getElementById("label2").className = normalClass
-      document.getElementById("label1").className = normalClass
-    }
+    if (progress.done == progress.items) setState(9)
+    if (response.done == response.items) setState(9)
 
     setElm(null)
     setStatement(null)
     console.log(response.done)
     setTimeout(function() {
       setSubmitting(false)
-      select(false)
-      if (progress.done < firstElms.length) {
-        document.getElementById("_opt").click()
-        document.getElementById('optForm').reset()
-      }
-      setState((response.done == response.items ? 3 : 2))
+      // select(false)
     }, 1000)
   }
 
   return (
     <div>
-      <p className="text-center text-sm text-blue-500 font-light mt-16 mb-12">
-        { submitting ? 'Mohon tunggu sejenak...' : 'Pilih satu yang paling sesuai, lalu tekan tombol Lanjut.' }
-      </p>
-
-      {(progress?.done < firstElms.length) &&  (
-        <form onSubmit={handleSubmit} id="optForm" className="flex flex-col mb-8">
-          {/* Hack */}
-          <input className="hidden" type="radio" id="_opt" name="option" value="" />
-          <label id="label1" htmlFor="opt1" className={normalClass}>
-            <input className="hidden" type="radio" id="opt1" name="option"
-              value={firstElms[progress?.done][0]}
-              placeholder={firstElms[progress?.done][1]}
-              onChange={(event) => {
-                if (submitting) return false
-                setElm(event.target.value)
-                setStatement(event.target.placeholder)
-                select('label1')
-                console.log("label1 clicked")
-              }}
-            />
-            <span>{ submitting ? '...' : firstElms[progress?.done][1] }</span>
-          </label>
-          <label id="label2" htmlFor="opt2" className={normalClass}>
-            <input className="hidden" type="radio" id="opt2" name="option"
-              value={secondElms[progress?.done][0]}
-              placeholder={secondElms[progress?.done][1]}
-              onChange={(event) => {
-                if (submitting) return false
-                setElm(event.target.value)
-                setStatement(event.target.placeholder)
-                select('label2')
-                console.log("label2 clicked")
-              }}
-            />
-            <span>{ submitting ? '...' : secondElms[progress?.done][1] }</span>
-          </label>
-          <div className="p-2 my-8 text-center">
-            <button id="btn" disabled className={btnNormal} type="submit">
-              Lanjut
-            </button>
-          </div>
-          <div className="mt-4 border-t border-red-300 py-2 text-red-500 text-center">{ submitting ? 'SUBMITTING' : 'IDLE' }</div>
-          <div className="text-blue-500 border-t border-b border-red-300 py-2">Elm: {elm} {statement}</div>
-        </form>
-      )}
+      <form onSubmit={handleSubmit} id="optForm" className="flex flex-col mb-8">
+        <p className="text-center text-sm text-blue-500 font-light mt-12 mb-12">
+          { submitting ? 'Mohon tunggu sejenak...' : 'Pilih satu yang paling sesuai, lalu tekan tombol Lanjut.' }
+        </p>
+        {/* Hack */}
+        <input className="hidden" type="radio" id="_opt" name="option" value="" />
+        <label id="label1" htmlFor="opt1" className={normalClass}>
+          <input className="hidden" type="radio" id="opt1" name="option"
+            value={firstElms[progress?.done][0]}
+            placeholder={firstElms[progress?.done][1]}
+            onChange={(event) => {
+              if (submitting) return false
+              setElm(event.target.value)
+              setStatement(event.target.placeholder)
+              select('label1')
+              console.log("label1 clicked")
+            }}
+          />
+          <span>{ submitting ? '...' : firstElms[progress?.done][1] }</span>
+        </label>
+        <label id="label2" htmlFor="opt2" className={normalClass}>
+          <input className="hidden" type="radio" id="opt2" name="option"
+            value={secondElms[progress?.done][0]}
+            placeholder={secondElms[progress?.done][1]}
+            onChange={(event) => {
+              if (submitting) return false
+              setElm(event.target.value)
+              setStatement(event.target.placeholder)
+              select('label2')
+              console.log("label2 clicked")
+            }}
+          />
+          <span>{ submitting ? '...' : secondElms[progress?.done][1] }</span>
+        </label>
+        <div className="p-2 my-8 text-center">
+          <button id="btn" disabled className={btnNormal} type="submit">
+            Lanjut
+          </button>
+        </div>
+        <div className="mt-4 border-t border-red-300 py-2 text-red-500 text-center">{ submitting ? 'SUBMITTING' : 'IDLE' }</div>
+        <div className="text-blue-500 border-t border-b border-red-300 py-2">Elm: {elm} {statement}</div>
+      </form>
     </div>
   )
 }

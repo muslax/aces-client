@@ -54,7 +54,13 @@ function PageDetail() {
 
       <hr className="my-6"/>
 
-      <pre className="w-full overflow-scroll bg-gray-200 p-3 text-xs my-6">{JSON.stringify(user, null, 2)}</pre>
+      {/* <pre className="w-full overflow-scroll bg-gray-200 p-3 text-xs my-6">{JSON.stringify(user, null, 2)}</pre> */}
+      <p className="text-sm text-center text-red-500 px-6">
+        Di halaman ini disajikan tombol-tombol (tiket) untuk mengakses tes,
+        namun paling banyak hanya satu yang aktif.
+        Tombol untuk test yang sudah selesai tidak lagi bisa dipakai untuk
+        masuk ke ruang tes.
+      </p>
     </div>
   )
 }
