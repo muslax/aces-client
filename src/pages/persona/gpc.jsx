@@ -7,7 +7,7 @@ import { useRouter } from "next/router"
 import { firstElms, secondElms } from 'lib/gpq-1.0'
 import PropTypes from 'prop-types'
 
-export default function Page() {
+export default function GPC() {
   const { user } = useUser({ redirectTo: '/' })
 
   if (!user || user.isLoggedIn === false) return <Unauthorized/>
