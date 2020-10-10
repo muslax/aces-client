@@ -1,6 +1,8 @@
 import { MongoClient } from "mongodb";
 
-const client = new MongoClient(process.env.MONGO_URL, {
+const url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@sg01.yuoqn.mongodb.net/${process.env.DATABASE_NAME}?retryWrites=true&w=majority`
+
+const client = new MongoClient(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

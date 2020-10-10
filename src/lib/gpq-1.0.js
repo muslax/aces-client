@@ -1,9 +1,11 @@
+import { func } from "prop-types"
+
 export const docInfo = {
   name: "GPQ Default Module",
   version: "1.0",
   title: "",
   description: "USER-DEFINED DESCRIPTION",
-  items: "120",
+  items: 120,
   elmRoles: "AC AD AT CB CL CM CR CT NT OR PL PS SA SC SD ST",
 	intro: "HTML Contents",
 }
@@ -255,3 +257,17 @@ export const secondElms = [
   ["AC","Mengerjakan segala sesuatunya lebih baik dari yang lain."],
   // [null, null] // HACK
 ]
+
+export function getItem(naturalSeq) {
+  if (naturalSeq >= 1 && naturalSeq <= docInfo.items) {
+    const index = naturalSeq - 1
+    return {
+      wbSeq: naturalSeq,
+      contents: [
+        {elm: firstElms[index][0], statement: firstElms[index][1]},
+        {elm: secondElms[index][0], statement: secondElms[index][1]},
+      ]
+    }
+  }
+  return false
+}
