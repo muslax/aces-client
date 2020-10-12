@@ -1,8 +1,8 @@
 import useUser from 'lib/useUser'
 import Unauthorized from 'components/Unauthorized'
 import Layout from 'components/Layout'
-import NavGuest from 'components/NavGuest'
-import Persona from 'components/Persona'
+// import NavGuest from 'components/NavGuest'
+// import Persona from 'components/Persona'
 
 export default function PrivatePage() {
   const { user } = useUser({ redirectTo: '/' })
