@@ -1,7 +1,7 @@
 import useUser from 'lib/useUser'
 import Unauthorized from 'components/Unauthorized'
-import LayoutExpert from 'components/LayoutExpert'
-import NavExpert from 'components/NavExpert'
+import Layout from 'components/Layout'
+// import NavExpert from 'components/NavExpert'
 
 export default function PrivatePage() {
   const { user } = useUser({ redirectTo: '/' })
@@ -9,11 +9,11 @@ export default function PrivatePage() {
   if (!user || user.isLoggedIn === false) return <Unauthorized/>
 
   return (
-    <LayoutExpert>
-      <NavExpert user={user} />
+    <Layout>
+      {/* <NavExpert user={user} /> */}
       <div>
         <pre>{JSON.stringify(user, null, 2)}</pre>
       </div>
-    </LayoutExpert>
+    </Layout>
   )
 }

@@ -1,6 +1,6 @@
 import useUser from 'lib/useUser'
 import Unauthorized from 'components/Unauthorized'
-import LayoutGuest from 'components/LayoutGuest'
+import Layout from 'components/Layout'
 import NavGuest from 'components/NavGuest'
 import Persona from 'components/Persona'
 
@@ -10,11 +10,11 @@ export default function PrivatePage() {
   if (!user || user.isLoggedIn === false) return <Unauthorized/>
 
   return (
-    <LayoutGuest>
-      <NavGuest user={user} />
+    <Layout>
+      {/* <NavGuest user={user} /> */}
       <div>
         <pre>{JSON.stringify(user, null, 2)}</pre>
       </div>
-    </LayoutGuest>
+    </Layout>
   )
 }
