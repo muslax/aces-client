@@ -25,8 +25,20 @@ const Layout = ({ title, children }) => (
       .container {
         max-width: 60rem;
       }
+
       .whitebox {
         min-height:600px;
+      }
+
+      .pre {
+        padding: 4px;
+        margin: 16px 0;
+        max-height: 300px;
+        font-size: 12px;
+        background-color: #f8f8fa;
+        border: 1px solid #f0f0f3;
+        border-left: 4px solid #ebebeb;
+        overflow: scroll;
       }
       .h-vh-75 {
         height: 75vh
@@ -38,7 +50,7 @@ const Layout = ({ title, children }) => (
 
     <main>
       <div className="container mx-auto px-4 sm:px-6 py-1s sm:py-1">
-        <div className="bg-gray-100 min-h-screen">
+        <div className="bg-gray-200s min-h-screen">
           <div className="whitebox bg-white pb-32">
             {children}
           </div>

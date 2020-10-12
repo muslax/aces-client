@@ -4,1115 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script>
-    let raw = [
-    {
-      "seq": 1,
-      "contents": [
-        { "elm": "CT", "text": "Membuat kesimpulan dari beragam situasi." },
-        { "elm": "ST", "text": "Mendiskusikan strategi jangka panjang." }
-      ]
-    },
-    {
-      "seq": 2,
-      "contents": [
-        { "elm": "AT", "text": "Menganalisa beragam hal sampai detail." },
-        { "elm": "OR", "text": "Mengelola kelebihan dan kekurangan sumberdaya saat bekerja." }
-      ]
-    },
-    {
-      "seq": 3,
-      "contents": [
-        { "elm": "CR", "text": "Mendiskusikan ide-ide baru." },
-        { "elm": "SA", "text": "Mencermati kondisi emosi orang lain." }
-      ]
-    },
-    {
-      "seq": 4,
-      "contents": [
-        { "elm": "PL", "text": "Menyiapkan rencana detail termasuk resiko kegagalannya." },
-        { "elm": "NT", "text": "Membangun jaringan kerja dengan beragam pihak." }
-      ]
-    },
-    {
-      "seq": 5,
-      "contents": [
-        { "elm": "CL", "text": "Memastikan tidak ada penyimpangan dalam pekerjaan." },
-        { "elm": "PS", "text": "Membuat orang lain mendukung pendapat pribadi yang disampaikan." }
-      ]
-    },
-    {
-      "seq": 6,
-      "contents": [
-        { "elm": "CB", "text": "Saling bantu membantu dalam kelompok kerja." },
-        { "elm": "AD", "text": "Menyesuaikan pola kerja sesuai dengan kondisi yang berubah-ubah." }
-      ]
-    },
-    {
-      "seq": 7,
-      "contents": [
-        { "elm": "CM", "text": "Menyampaikan ide baru di hadapan kelompok kerja." },
-        { "elm": "SD", "text": "Melakukan beragam kegiatan untuk mengatasi kekurangan diri." }
-      ]
-    },
-    {
-      "seq": 8,
-      "contents": [
-        { "elm": "SC", "text": "Menahan diri untuk tidak terbawa emosi." },
-        { "elm": "AC", "text": "Bekerja dalam suasana yang kompetitif." }
-      ]
-    },
-    {
-      "seq": 9,
-      "contents": [
-        { "elm": "ST", "text": "Memproyeksikan keadaan sekarang ke masa depan." },
-        { "elm": "OR", "text": "Memastikan sumberdaya teralokasi secara efektif dan efisien." }
-      ]
-    },
-    {
-      "seq": 10,
-      "contents": [
-        { "elm": "CT", "text": "Menelaah hal-hal yang bersifat konseptual." },
-        { "elm": "SA", "text": "Memahami sudut pandang orang lain." }
-      ]
-    },
-    {
-      "seq": 11,
-      "contents": [
-        { "elm": "AT", "text": "Mendalami suatu topik serinci mungkin." },
-        { "elm": "NT", "text": "Membangun kedekatan dan keakraban kelompok kerja." }
-      ]
-    },
-    {
-      "seq": 12,
-      "contents": [
-        { "elm": "CR", "text": "Mengembangkan metode baru dalam rangka efisiensi kerja." },
-        { "elm": "PS", "text": "Membuat orang lain mau menerima gagasan pribadi." }
-      ]
-    },
-    {
-      "seq": 13,
-      "contents": [
-        { "elm": "PL", "text": "Merencanakan langkah kerja sesuai dengan waktu dan sumberdaya." },
-        { "elm": "AD", "text": "Mencari cara terbaik menghadapi perubahan." }
-      ]
-    },
-    {
-      "seq": 14,
-      "contents": [
-        { "elm": "CL", "text": "Mengawasi kesesuaian pelaksanaan dengan rencana kerja." },
-        { "elm": "SD", "text": "Mencari kesempatan untuk mengembangkan diri." }
-      ]
-    },
-    {
-      "seq": 15,
-      "contents": [
-        { "elm": "CB", "text": "Mendorong orang agar mampu berkontribusi maksimal di tim kerjanya." },
-        { "elm": "SC", "text": "Tetap tenang di saat-saat yang menegangkan." }
-      ]
-    },
-    {
-      "seq": 16,
-      "contents": [
-        { "elm": "CM", "text": "Menyampaikan pendapat ke kelompok kerja yang baru." },
-        { "elm": "AC", "text": "Memiliki dorongan kuat untuk mencapai tujuan" }
-      ]
-    },
-    {
-      "seq": 17,
-      "contents": [
-        { "elm": "OR", "text": "Mengorganisir pelaksanaan beragam proyek supaya tidak tumpang tindih." },
-        { "elm": "SA", "text": "Menangkap situasi emosi orang lain." }
-      ]
-    },
-    {
-      "seq": 18,
-      "contents": [
-        { "elm": "ST", "text": "Mengantisipasi kendala yang akan muncul di masa mendatang." },
-        { "elm": "NT", "text": "Mengembangkan jejaring/hubungan sosial seluas mungkin." }
-      ]
-    },
-    {
-      "seq": 19,
-      "contents": [
-        { "elm": "CT", "text": "Menyimpulkan hasil sebuah proses diskusi." },
-        { "elm": "PS", "text": "Mempengaruhi orang lain untuk menerima pendapat pribadi." }
-      ]
-    },
-    {
-      "seq": 20,
-      "contents": [
-        { "elm": "AT", "text": "Mengerjakan hal-hal detail." },
-        { "elm": "AD", "text": "Menyesuaikan diri dengan beragam hal di lingkungan baru." }
-      ]
-    },
-    {
-      "seq": 21,
-      "contents": [
-        { "elm": "CR", "text": "Mempraktekkan cara yang baru pada pekerjaan yang rutin." },
-        { "elm": "SD", "text": "Menindaklanjuti umpan balik mengenai diri saya." }
-      ]
-    },
-    {
-      "seq": 22,
-      "contents": [
-        { "elm": "PL", "text": "Mengembangkan target kerja menjadi langkah kerja yang rinci." },
-        { "elm": "SC", "text": "Tetap berpikir jernih ketika berada di bawah tekanan." }
-      ]
-    },
-    {
-      "seq": 23,
-      "contents": [
-        { "elm": "CL", "text": "Mengevaluasi pelaksanaan setiap rencana kerja." },
-        { "elm": "CM", "text": "Menyampaikan pendapat secara terbuka." }
-      ]
-    },
-    {
-      "seq": 24,
-      "contents": [
-        { "elm": "CB", "text": "Membangun terciptanya semangat kerjasama pada suatu tim." },
-        { "elm": "AC", "text": "Menetapkan sasaran yang menantang." }
-      ]
-    },
-    {
-      "seq": 25,
-      "contents": [
-        { "elm": "SA", "text": "Mengenali kondisi emosi orang lain." },
-        { "elm": "NT", "text": "Memupuk dan mengelola jejaring/hubungan sosial yang erat." }
-      ]
-    },
-    {
-      "seq": 26,
-      "contents": [
-        { "elm": "OR", "text": "Memastikan kesesuaian alokasi sumberdaya dengan prioritas kerja." },
-        { "elm": "PS", "text": "Bernegosiasi dalam rangka pendapat pribadi dapat diterima." }
-      ]
-    },
-    {
-      "seq": 27,
-      "contents": [
-        { "elm": "ST", "text": "Membuat simulasi jangka panjang." },
-        { "elm": "AD", "text": "Menyesuaikan perilaku dengan tuntutan perubahan." }
-      ]
-    },
-    {
-      "seq": 28,
-      "contents": [
-        { "elm": "CT", "text": "Mengenalkan wacana baru untuk suatu kegiatan yang rutin." },
-        { "elm": "SD", "text": "Meningkatkan kemampuan diri secara berkesinambungan." }
-      ]
-    },
-    {
-      "seq": 29,
-      "contents": [
-        { "elm": "AT", "text": "Mengurai masalah hingga ke akar permasalahan." },
-        { "elm": "SC", "text": "Tetap tenang dalam menghadapi tekanan emosi." }
-      ]
-    },
-    {
-      "seq": 30,
-      "contents": [
-        { "elm": "CR", "text": "Mengembangkan pendekatan baru untuk hal yang sudah rutin." },
-        { "elm": "CM", "text": "Bertukar pikiran secara terbuka dengan orang lain." }
-      ]
-    },
-    {
-      "seq": 31,
-      "contents": [
-        { "elm": "PL", "text": "Merencanakan pekerjaaan secara teratur dan rapi dalam situasi apapun." },
-        { "elm": "CB", "text": "Berpartisipasi dalam kegiatan kelompok." }
-      ]
-    },
-    {
-      "seq": 32,
-      "contents": [
-        { "elm": "CL", "text": "Mengidentifikasi penyimpangan yang terjadi pada pekerjaan." },
-        { "elm": "AC", "text": "Bersemangat menghadapi pekerjaan yang menantang." }
-      ]
-    },
-    {
-      "seq": 33,
-      "contents": [
-        { "elm": "NT", "text": "Membina dan mengembangkan hubungan yang saling menguntungkan." },
-        { "elm": "PS", "text": "Memakai beragam pendekatan supaya pendapat pribadi diterima." }
-      ]
-    },
-    {
-      "seq": 34,
-      "contents": [
-        { "elm": "SA", "text": "Memperhatikan pengaruh emosi pada kinerja." },
-        { "elm": "AD", "text": "Mencermati perubahan dan menelaah kendala-kendalanya." }
-      ]
-    },
-    {
-      "seq": 35,
-      "contents": [
-        { "elm": "OR", "text": "Mengarahkan sumber daya untuk mencapai target." },
-        { "elm": "SD", "text": "Mencari cara-cara pengembangan diri yang efektif." }
-      ]
-    },
-    {
-      "seq": 36,
-      "contents": [
-        { "elm": "ST", "text": "Menganalisa kemungkinan yang bisa terjadi di masa depan." },
-        { "elm": "SC", "text": "Mudah bangkit dari kekecewaan." }
-      ]
-    },
-    {
-      "seq": 37,
-      "contents": [
-        { "elm": "CT", "text": "Membandingkan teori dengan kenyataan." },
-        { "elm": "CM", "text": "Saya mudah mengekspresikan gagasan." }
-      ]
-    },
-    {
-      "seq": 38,
-      "contents": [
-        { "elm": "AT", "text": "Menganalisa situasi hingga akar permasalahan." },
-        { "elm": "CB", "text": "Berkomitmen untuk mendukung keputusan kelompok." }
-      ]
-    },
-    {
-      "seq": 39,
-      "contents": [
-        { "elm": "CR", "text": "Melakukan pekerjaan yang sama dengan cara yang berbeda." },
-        { "elm": "CL", "text": "Memantau kesalahan pelaksanaan pekerjaan." }
-      ]
-    },
-    {
-      "seq": 40,
-      "contents": [
-        { "elm": "PL", "text": "Memilah tujuan menjadi langkah-langkah kerja." },
-        { "elm": "AC", "text": "Mengerjakan segala sesuatunya lebih baik dari yang lain." }
-      ]
-    },
-    {
-      "seq": 41,
-      "contents": [
-        { "elm": "PS", "text": "Membuat orang lain mendukung pendapat pribadi yang disampaikan." },
-        { "elm": "AD", "text": "Menyesuaikan pola kerja sesuai dengan kondisi yang berubah-ubah." }
-      ]
-    },
-    {
-      "seq": 42,
-      "contents": [
-        { "elm": "NT", "text": "Membangun jaringan kerja dengan beragam pihak." },
-        { "elm": "SD", "text": "Melakukan beragam kegiatan untuk mengatasi kekurangan diri." }
-      ]
-    },
-    {
-      "seq": 43,
-      "contents": [
-        { "elm": "SA", "text": "Mencermati kondisi emosi orang lain." },
-        { "elm": "SC", "text": "Menahan diri untuk tidak terbawa emosi" }
-      ]
-    },
-    {
-      "seq": 44,
-      "contents": [
-        { "elm": "OR", "text": "Mengelola kelebihan dan kekurangan sumberdaya saat bekerja." },
-        { "elm": "CM", "text": "Menyampaikan ide baru di hadapan kelompok kerja." }
-      ]
-    },
-    {
-      "seq": 45,
-      "contents": [
-        { "elm": "ST", "text": "Mendiskusikan strategi jangka panjang." },
-        { "elm": "CB", "text": "Saling bantu membantu dalam kelompok kerja." }
-      ]
-    },
-    {
-      "seq": 46,
-      "contents": [
-        { "elm": "CT", "text": "Membuat kesimpulan dari beragam informasi." },
-        { "elm": "CL", "text": "Memastikan tidak ada penyimpangan dalam pekerjaan." }
-      ]
-    },
-    {
-      "seq": 47,
-      "contents": [
-        { "elm": "AT", "text": "Menganalisa beragam hal sampai detail." },
-        { "elm": "PL", "text": "Menyiapkan rencana detail termasuk resiko kegagalannya." }
-      ]
-    },
-    {
-      "seq": 48,
-      "contents": [
-        { "elm": "CR", "text": "Mendiskusikan ide-ide baru." },
-        { "elm": "AC", "text": "Bekerja dalam suasana yang kompetitif." }
-      ]
-    },
-    {
-      "seq": 49,
-      "contents": [
-        { "elm": "AD", "text": "Mencari cara terbaik menghadapi perubahan." },
-        { "elm": "SD", "text": "Mencari kesempatan untuk mengembangkan diri." }
-      ]
-    },
-    {
-      "seq": 50,
-      "contents": [
-        { "elm": "PS", "text": "Membuat orang lain mau menerima gagasan pribadi." },
-        { "elm": "SC", "text": "Tetap tenang di saat-saat yang menegangkan." }
-      ]
-    },
-    {
-      "seq": 51,
-      "contents": [
-        { "elm": "NT", "text": "Membangun kedekatan dan keakraban kelompok kerja." },
-        { "elm": "CM", "text": "Menyampaikan pendapat ke kelompok kerja yang baru." }
-      ]
-    },
-    {
-      "seq": 52,
-      "contents": [
-        { "elm": "SA", "text": "Memahami sudut pandang orang lain." },
-        { "elm": "CB", "text": "Mendorong orang agar mampu berkontribusi maksimal di tim kerjanya." }
-      ]
-    },
-    {
-      "seq": 53,
-      "contents": [
-        { "elm": "OR", "text": "Memastikan sumberdaya teralokasi secara efektif dan efisien." },
-        { "elm": "CL", "text": "Mengawasi kesesuaian pelaksanaan dengan rencana kerja." }
-      ]
-    },
-    {
-      "seq": 54,
-      "contents": [
-        { "elm": "ST", "text": "Memproyeksikan keadaan sekarang ke masa depan." },
-        { "elm": "PL", "text": "Merencanakan langkah kerja sesuai dengan waktu dan sumberdaya." }
-      ]
-    },
-    {
-      "seq": 55,
-      "contents": [
-        { "elm": "CT", "text": "Menelaah hal-hal yang bersifat konseptual." },
-        { "elm": "CR", "text": "Mengembangkan metode baru dalam rangka efisiensi kerja." }
-      ]
-    },
-    {
-      "seq": 56,
-      "contents": [
-        { "elm": "AT", "text": "Mendalami suatu topik serinci mungkin." },
-        { "elm": "AC", "text": "Memiliki dorongan kuat untuk mencapai tujuan." }
-      ]
-    },
-    {
-      "seq": 57,
-      "contents": [
-        { "elm": "SD", "text": "Menindaklanjuti umpan balik mengenai diri saya." },
-        { "elm": "SC", "text": "Tetap berpikir jernih ketika berada di bawah tekanan." }
-      ]
-    },
-    {
-      "seq": 58,
-      "contents": [
-        { "elm": "AD", "text": "Menyesuaikan diri dengan beragam hal di lingkungan baru." },
-        { "elm": "CM", "text": "Menyampaikan pendapat secara terbuka." }
-      ]
-    },
-    {
-      "seq": 59,
-      "contents": [
-        { "elm": "PS", "text": "Mempengaruhi orang lain untuk menerima pendapat pribadi." },
-        { "elm": "CB", "text": "Membangun terciptanya semangat kerjasama pada suatu tim." }
-      ]
-    },
-    {
-      "seq": 60,
-      "contents": [
-        { "elm": "NT", "text": "Mengembangkan jejaring/hubungan sosial seluas mungkin." },
-        { "elm": "CL", "text": "Mengevaluasi pelaksanaan setiap rencana kerja." }
-      ]
-    },
-    {
-      "seq": 61,
-      "contents": [
-        { "elm": "SA", "text": "Menangkap situasi emosi orang lain." },
-        { "elm": "PL", "text": "Mengembangkan target kerja menjadi langkah kerja yang rinci." }
-      ]
-    },
-    {
-      "seq": 62,
-      "contents": [
-        { "elm": "OR", "text": "Mengorganisir pelaksanaan beragam proyek supaya tidak tumpang tindih." },
-        { "elm": "CR", "text": "Mempraktekkan cara yang baru pada pekerjaan yang rutin." }
-      ]
-    },
-    {
-      "seq": 63,
-      "contents": [
-        { "elm": "ST", "text": "Mengantisipasi kendala yang akan muncul di masa mendatang." },
-        { "elm": "AT", "text": "Mengerjakan hal-hal detail." }
-      ]
-    },
-    {
-      "seq": 64,
-      "contents": [
-        { "elm": "CT", "text": "Menyimpulkan hasil sebuah proses diskusi." },
-        { "elm": "AC", "text": "Menetapkan sasaran yang menantang." }
-      ]
-    },
-    {
-      "seq": 65,
-      "contents": [
-        { "elm": "SC", "text": "Tetap tenang dalam menghadapi tekanan emosi." },
-        { "elm": "CM", "text": "Bertukar pikiran secara terbuka dengan orang lain." }
-      ]
-    },
-    {
-      "seq": 66,
-      "contents": [
-        { "elm": "SD", "text": "Meningkatkan kemampuan diri secara berkesinambungan." },
-        { "elm": "CB", "text": "Berpartisipasi dalam kegiatan kelompok." }
-      ]
-    },
-    {
-      "seq": 67,
-      "contents": [
-        { "elm": "AD", "text": "Menyesuaikan perilaku dengan tuntutan perubahan." },
-        { "elm": "CL", "text": "Mengidentifikasi penyimpangan yang terjadi pada pekerjaan." }
-      ]
-    },
-    {
-      "seq": 68,
-      "contents": [
-        { "elm": "PS", "text": "Bernegosiasi dalam rangka pendapat pribadi dapat diterima." },
-        { "elm": "PL", "text": "Merencanakan pekerjaaan secara teratur dan rapi dalam situasi apapun." }
-      ]
-    },
-    {
-      "seq": 69,
-      "contents": [
-        { "elm": "NT", "text": "Memupuk dan mengelola jejaring/hubungan sosial yang erat." },
-        { "elm": "CR", "text": "Mengembangkan pendekatan baru untuk hal yang sudah rutin." }
-      ]
-    },
-    {
-      "seq": 70,
-      "contents": [
-        { "elm": "SA", "text": "Mengenali kondisi emosi orang lain." },
-        { "elm": "AT", "text": "Mengurai masalah hingga ke akar permasalahan." }
-      ]
-    },
-    {
-      "seq": 71,
-      "contents": [
-        { "elm": "OR", "text": "Memastikan kesesuaian alokasi sumberdaya dengan prioritas kerja." },
-        { "elm": "CT", "text": "Mengenalkan wacana baru untuk suatu kegiatan yang rutin." }
-      ]
-    },
-    {
-      "seq": 72,
-      "contents": [
-        { "elm": "ST", "text": "Membuat simulasi jangka panjang." },
-        { "elm": "AC", "text": "Bersemangat menghadapi pekerjaan yang menantang." }
-      ]
-    },
-    {
-      "seq": 73,
-      "contents": [
-        { "elm": "CM", "text": "Saya mudah mengekspresikan gagasan." },
-        { "elm": "CB", "text": "Berkomitmen untuk mendukung keputusan kelompok." }
-      ]
-    },
-    {
-      "seq": 74,
-      "contents": [
-        { "elm": "SC", "text": "Mudah bangkit dari kekecewaan." },
-        { "elm": "CL", "text": "Memantau kesalahan pelaksanaan pekerjaan." }
-      ]
-    },
-    {
-      "seq": 75,
-      "contents": [
-        { "elm": "SD", "text": "Mencari cara-cara pengembangan diri yang efektif." },
-        { "elm": "PL", "text": "Memilah tujuan menjadi langkah-langkah kerja." }
-      ]
-    },
-    {
-      "seq": 76,
-      "contents": [
-        { "elm": "AD", "text": "Mencermati perubahan dan menelaah kendala-kendalanya." },
-        { "elm": "CR", "text": "Melakukan pekerjaan yang sama dengan cara yang berbeda." }
-      ]
-    },
-    {
-      "seq": 77,
-      "contents": [
-        { "elm": "PS", "text": "Memakai beragam pendekatan supaya pendapat pribadi diterima." },
-        { "elm": "AT", "text": "Menganalisa situasi hingga akar permasalahan." }
-      ]
-    },
-    {
-      "seq": 78,
-      "contents": [
-        { "elm": "NT", "text": "Membina dan mengembangkan hubungan yang saling menguntungkan." },
-        { "elm": "CT", "text": "Membandingkan teori dengan kenyataan." }
-      ]
-    },
-    {
-      "seq": 79,
-      "contents": [
-        { "elm": "SA", "text": "Memperhatikan pengaruh emosi pada kinerja." },
-        { "elm": "ST", "text": "Menganalisa kemungkinan yang bisa terjadi di masa depan." }
-      ]
-    },
-    {
-      "seq": 80,
-      "contents": [
-        { "elm": "OR", "text": "Mengarahkan sumber daya untuk mencapai target." },
-        { "elm": "AC", "text": "Mengerjakan segala sesuatunya lebih baik dari yang lain.." }
-      ]
-    },
-    {
-      "seq": 81,
-      "contents": [
-        { "elm": "CB", "text": "Saling bantu membantu dalam kelompok kerja." },
-        { "elm": "CL", "text": "Memastikan tidak ada penyimpangan dalam pekerjaan." }
-      ]
-    },
-    {
-      "seq": 82,
-      "contents": [
-        { "elm": "CM", "text": "Menyampaikan ide baru di hadapan kelompok kerja." },
-        { "elm": "PL", "text": "Menyiapkan rencana detail termasuk resiko kegagalannya." }
-      ]
-    },
-    {
-      "seq": 83,
-      "contents": [
-        { "elm": "SC", "text": "Menahan diri untuk tidak terbawa emosi." },
-        { "elm": "CR", "text": "Mendiskusikan ide-ide baru." }
-      ]
-    },
-    {
-      "seq": 84,
-      "contents": [
-        { "elm": "SD", "text": "Melakukan beragam kegiatan untuk mengatasi kekurangan diri." },
-        { "elm": "AT", "text": "Menganalisa beragam hal sampai detail." }
-      ]
-    },
-    {
-      "seq": 85,
-      "contents": [
-        { "elm": "AD", "text": "Menyesuaikan pola kerja sesuai dengan kondisi yang berubah-ubah" },
-        { "elm": "CT", "text": "Membuat kesimpulan dari beragam informasi." }
-      ]
-    },
-    {
-      "seq": 86,
-      "contents": [
-        { "elm": "PS", "text": "Membuat orang lain mendukung pendapat pribadi yang disampaikan." },
-        { "elm": "ST", "text": "Mendiskusikan strategi jangka panjang." }
-      ]
-    },
-    {
-      "seq": 87,
-      "contents": [
-        { "elm": "NT", "text": "Membangun jaringan kerja dengan beragam pihak." },
-        { "elm": "OR", "text": "Mengelola kelebihan dan kekurangan sumberdaya saat bekerja." }
-      ]
-    },
-    {
-      "seq": 88,
-      "contents": [
-        { "elm": "SA", "text": "Mencermati kondisi emosi orang lain." },
-        { "elm": "AC", "text": "Bekerja dalam suasana yang kompetitif." }
-      ]
-    },
-    {
-      "seq": 89,
-      "contents": [
-        { "elm": "CL", "text": "Mengawasi kesesuaian pelaksanaan dengan rencana kerja." },
-        { "elm": "PL", "text": "Merencanakan langkah kerja sesuai dengan waktu dan sumberdaya." }
-      ]
-    },
-    {
-      "seq": 90,
-      "contents": [
-        { "elm": "CB", "text": "Mendorong orang agar mampu berkontribusi maksimal di tim kerjanya." },
-        { "elm": "CR", "text": "Mengembangkan metode baru dalam rangka efisiensi kerja." }
-      ]
-    },
-    {
-      "seq": 91,
-      "contents": [
-        { "elm": "CM", "text": "Menyampaikan pendapat ke kelompok kerja yang baru." },
-        { "elm": "AT", "text": "Mendalami suatu topik serinci mungkin." }
-      ]
-    },
-    {
-      "seq": 92,
-      "contents": [
-        { "elm": "SC", "text": "Tetap tenang di saat-saat yang menegangkan." },
-        { "elm": "CT", "text": "Menelaah hal-hal yang bersifat konseptual." }
-      ]
-    },
-    {
-      "seq": 93,
-      "contents": [
-        { "elm": "SD", "text": "Mencari kesempatan untuk mengembangkan diri." },
-        { "elm": "ST", "text": "Memproyeksikan keadaan sekarang ke masa depan." }
-      ]
-    },
-    {
-      "seq": 94,
-      "contents": [
-        { "elm": "AD", "text": "Mencari cara terbaik menghadapi perubahan." },
-        { "elm": "OR", "text": "Memastikan sumberdaya teralokasi secara efektif dan efisien." }
-      ]
-    },
-    {
-      "seq": 95,
-      "contents": [
-        { "elm": "PS", "text": "Membuat orang lain mau menerima gagasan pribadi." },
-        { "elm": "SA", "text": "Memahami sudut pandang orang lain." }
-      ]
-    },
-    {
-      "seq": 96,
-      "contents": [
-        { "elm": "NT", "text": "Membangun kedekatan dan keakraban kelompok kerja." },
-        { "elm": "AC", "text": "Memiliki dorongan kuat untuk mencapai tujuan." }
-      ]
-    },
-    {
-      "seq": 97,
-      "contents": [
-        { "elm": "PL", "text": "Mengembangkan target kerja menjadi langkah kerja yang rinci." },
-        { "elm": "CR", "text": "Mempraktekkan cara yang baru pada pekerjaan yang rutin." }
-      ]
-    },
-    {
-      "seq": 98,
-      "contents": [
-        { "elm": "CL", "text": "Mengevaluasi pelaksanaan setiap rencana kerja." },
-        { "elm": "AT", "text": "Mengerjakan hal-hal detail." }
-      ]
-    },
-    {
-      "seq": 99,
-      "contents": [
-        { "elm": "CB", "text": "Membangun terciptanya semangat kerjasama pada suatu tim." },
-        { "elm": "CT", "text": "Menyimpulkan hasil sebuah proses diskusi." }
-      ]
-    },
-    {
-      "seq": 100,
-      "contents": [
-        { "elm": "CM", "text": "Menyampaikan pendapat secara terbuka." },
-        { "elm": "ST", "text": "Mengantisipasi kendala yang akan muncul di masa mendatang." }
-      ]
-    },
-    {
-      "seq": 101,
-      "contents": [
-        { "elm": "SC", "text": "Tetap berpikir jernih ketika berada di bawah tekanan." },
-        { "elm": "OR", "text": "Mengorganisir pelaksanaan beragam proyek supaya tidak tumpang tindih." }
-      ]
-    },
-    {
-      "seq": 102,
-      "contents": [
-        { "elm": "SD", "text": "Menindaklanjuti umpan balik mengenai diri saya." },
-        { "elm": "SA", "text": "Menangkap situasi emosi orang lain." }
-      ]
-    },
-    {
-      "seq": 103,
-      "contents": [
-        { "elm": "AD", "text": "Menyesuaikan diri dengan beragam hal di lingkungan baru." },
-        { "elm": "NT", "text": "Mengembangkan jejaring/hubungan sosial seluas mungkin." }
-      ]
-    },
-    {
-      "seq": 104,
-      "contents": [
-        { "elm": "PS", "text": "Mempengaruhi orang lain untuk menerima pendapat pribadi." },
-        { "elm": "AC", "text": "Menetapkan sasaran yang menantang." }
-      ]
-    },
-    {
-      "seq": 105,
-      "contents": [
-        { "elm": "CR", "text": "Mengembangkan pendekatan baru untuk hal yang sudah rutin." },
-        { "elm": "AT", "text": "Mengurai masalah hingga ke akar permasalahan." }
-      ]
-    },
-    {
-      "seq": 106,
-      "contents": [
-        { "elm": "PL", "text": "Merencanakan pekerjaaan secara teratur dan rapi dalam situasi apapun." },
-        { "elm": "CT", "text": "Mengenalkan wacana baru untuk suatu kegiatan yang rutin." }
-      ]
-    },
-    {
-      "seq": 107,
-      "contents": [
-        { "elm": "CL", "text": "Mengidentifikasi penyimpangan yang terjadi pada pekerjaan." },
-        { "elm": "ST", "text": "Membuat simulasi jangka panjang." }
-      ]
-    },
-    {
-      "seq": 108,
-      "contents": [
-        { "elm": "CB", "text": "Berpartisipasi dalam kegiatan kelompok." },
-        { "elm": "OR", "text": "Memastikan kesesuaian alokasi sumberdaya dengan prioritas kerja." }
-      ]
-    },
-    {
-      "seq": 109,
-      "contents": [
-        { "elm": "CM", "text": "Bertukar pikiran secara terbuka dengan orang lain." },
-        { "elm": "SA", "text": "Mengenali kondisi emosi orang lain." }
-      ]
-    },
-    {
-      "seq": 110,
-      "contents": [
-        { "elm": "SC", "text": "Tetap tenang dalam menghadapi tekanan emosi." },
-        { "elm": "NT", "text": "Memupuk dan mengelola jejaring/hubungan sosial yang erat." }
-      ]
-    },
-    {
-      "seq": 111,
-      "contents": [
-        { "elm": "SD", "text": "Meningkatkan kemampuan diri secara berkesinambungan." },
-        { "elm": "PS", "text": "Bernegosiasi dalam rangka pendapat pribadi dapat diterima." }
-      ]
-    },
-    {
-      "seq": 112,
-      "contents": [
-        { "elm": "AD", "text": "Menyesuaikan perilaku dengan tuntutan perubahan." },
-        { "elm": "AC", "text": "Bersemangat menghadapi pekerjaan yang menantang." }
-      ]
-    },
-    {
-      "seq": 113,
-      "contents": [
-        { "elm": "AT", "text": "Menganalisa situasi hingga akar permasalahan." },
-        { "elm": "CT", "text": "Membandingkan teori dengan kenyataan." }
-      ]
-    },
-    {
-      "seq": 114,
-      "contents": [
-        { "elm": "CR", "text": "Melakukan pekerjaan yang sama dengan cara yang berbeda." },
-        { "elm": "ST", "text": "Menganalisa kemungkinan yang bisa terjadi di masa depan." }
-      ]
-    },
-    {
-      "seq": 115,
-      "contents": [
-        { "elm": "PL", "text": "Memilah tujuan menjadi langkah-langkah kerja." },
-        { "elm": "OR", "text": "Mengarahkan sumber daya untuk mencapai target." }
-      ]
-    },
-    {
-      "seq": 116,
-      "contents": [
-        { "elm": "CL", "text": "Memantau kesalahan pelaksanaan pekerjaan." },
-        { "elm": "SA", "text": "Memperhatikan pengaruh emosi pada kinerja." }
-      ]
-    },
-    {
-      "seq": 117,
-      "contents": [
-        { "elm": "CB", "text": "Berkomitmen untuk mendukung keputusan kelompok." },
-        { "elm": "NT", "text": "Membina dan mengembangkan hubungan yang saling menguntungkan." }
-      ]
-    },
-    {
-      "seq": 118,
-      "contents": [
-        { "elm": "CM", "text": "Mudah mengekspresikan gagasan." },
-        { "elm": "PS", "text": "Memakai beragam pendekatan supaya pendapat pribadi diterima." }
-      ]
-    },
-    {
-      "seq": 119,
-      "contents": [
-        { "elm": "SC", "text": "Mudah bangkit dari kekecewaan." },
-        { "elm": "AD", "text": "Mencermati perubahan dan menelaah kendala-kendalanya." }
-      ]
-    },
-    {
-      "seq": 120,
-      "contents": [
-        { "elm": "SD", "text": "Mencari cara-cara pengembangan diri yang efektif." },
-        { "elm": "AC", "text": "Mengerjakan segala sesuatunya lebih baik dari yang lain." }
-      ]
-    }
-  ]
-
-  var firstElms = [
-    ["CT","Membuat kesimpulan dari beragam situasi."],
-    ["AT","Menganalisa beragam hal sampai detail."],
-    ["CR","Mendiskusikan ide-ide baru."],
-    ["PL","Menyiapkan rencana detail termasuk resiko kegagalannya."],
-    ["CL","Memastikan tidak ada penyimpangan dalam pekerjaan."],
-    ["CB","Saling bantu membantu dalam kelompok kerja."],
-    ["CM","Menyampaikan ide baru di hadapan kelompok kerja."],
-    ["SC","Menahan diri untuk tidak terbawa emosi."],
-    ["ST","Memproyeksikan keadaan sekarang ke masa depan."],
-    ["CT","Menelaah hal-hal yang bersifat konseptual."],
-    ["AT","Mendalami suatu topik serinci mungkin."],
-    ["CR","Mengembangkan metode baru dalam rangka efisiensi kerja."],
-    ["PL","Merencanakan langkah kerja sesuai dengan waktu dan sumberdaya."],
-    ["CL","Mengawasi kesesuaian pelaksanaan dengan rencana kerja."],
-    ["CB","Mendorong orang agar mampu berkontribusi maksimal di tim kerjanya."],
-    ["CM","Menyampaikan pendapat ke kelompok kerja yang baru."],
-    ["OR","Mengorganisir pelaksanaan beragam proyek supaya tidak tumpang tindih."],
-    ["ST","Mengantisipasi kendala yang akan muncul di masa mendatang."],
-    ["CT","Menyimpulkan hasil sebuah proses diskusi."],
-    ["AT","Mengerjakan hal-hal detail."],
-    ["CR","Mempraktekkan cara yang baru pada pekerjaan yang rutin."],
-    ["PL","Mengembangkan target kerja menjadi langkah kerja yang rinci."],
-    ["CL","Mengevaluasi pelaksanaan setiap rencana kerja."],
-    ["CB","Membangun terciptanya semangat kerjasama pada suatu tim."],
-    ["SA","Mengenali kondisi emosi orang lain."],
-    ["OR","Memastikan kesesuaian alokasi sumberdaya dengan prioritas kerja."],
-    ["ST","Membuat simulasi jangka panjang."],
-    ["CT","Mengenalkan wacana baru untuk suatu kegiatan yang rutin."],
-    ["AT","Mengurai masalah hingga ke akar permasalahan."],
-    ["CR","Mengembangkan pendekatan baru untuk hal yang sudah rutin."],
-    ["PL","Merencanakan pekerjaaan secara teratur dan rapi dalam situasi apapun."],
-    ["CL","Mengidentifikasi penyimpangan yang terjadi pada pekerjaan."],
-    ["NT","Membina dan mengembangkan hubungan yang saling menguntungkan."],
-    ["SA","Memperhatikan pengaruh emosi pada kinerja."],
-    ["OR","Mengarahkan sumber daya untuk mencapai target."],
-    ["ST","Menganalisa kemungkinan yang bisa terjadi di masa depan."],
-    ["CT","Membandingkan teori dengan kenyataan."],
-    ["AT","Menganalisa situasi hingga akar permasalahan."],
-    ["CR","Melakukan pekerjaan yang sama dengan cara yang berbeda."],
-    ["PL","Memilah tujuan menjadi langkah-langkah kerja."],
-    ["PS","Membuat orang lain mendukung pendapat pribadi yang disampaikan."],
-    ["NT","Membangun jaringan kerja dengan beragam pihak."],
-    ["SA","Mencermati kondisi emosi orang lain."],
-    ["OR","Mengelola kelebihan dan kekurangan sumberdaya saat bekerja."],
-    ["ST","Mendiskusikan strategi jangka panjang."],
-    ["CT","Membuat kesimpulan dari beragam informasi."],
-    ["AT","Menganalisa beragam hal sampai detail."],
-    ["CR","Mendiskusikan ide-ide baru."],
-    ["AD","Mencari cara terbaik menghadapi perubahan."],
-    ["PS","Membuat orang lain mau menerima gagasan pribadi."],
-    ["NT","Membangun kedekatan dan keakraban kelompok kerja."],
-    ["SA","Memahami sudut pandang orang lain."],
-    ["OR","Memastikan sumberdaya teralokasi secara efektif dan efisien."],
-    ["ST","Memproyeksikan keadaan sekarang ke masa depan."],
-    ["CT","Menelaah hal-hal yang bersifat konseptual."],
-    ["AT","Mendalami suatu topik serinci mungkin."],
-    ["SD","Menindaklanjuti umpan balik mengenai diri saya."],
-    ["AD","Menyesuaikan diri dengan beragam hal di lingkungan baru."],
-    ["PS","Mempengaruhi orang lain untuk menerima pendapat pribadi."],
-    ["NT","Mengembangkan jejaring/hubungan sosial seluas mungkin."],
-    ["SA","Menangkap situasi emosi orang lain."],
-    ["OR","Mengorganisir pelaksanaan beragam proyek supaya tidak tumpang tindih."],
-    ["ST","Mengantisipasi kendala yang akan muncul di masa mendatang."],
-    ["CT","Menyimpulkan hasil sebuah proses diskusi."],
-    ["SC","Tetap tenang dalam menghadapi tekanan emosi."],
-    ["SD","Meningkatkan kemampuan diri secara berkesinambungan."],
-    ["AD","Menyesuaikan perilaku dengan tuntutan perubahan."],
-    ["PS","Bernegosiasi dalam rangka pendapat pribadi dapat diterima."],
-    ["NT","Memupuk dan mengelola jejaring/hubungan sosial yang erat."],
-    ["SA","Mengenali kondisi emosi orang lain."],
-    ["OR","Memastikan kesesuaian alokasi sumberdaya dengan prioritas kerja."],
-    ["ST","Membuat simulasi jangka panjang."],
-    ["CM","Saya mudah mengekspresikan gagasan."],
-    ["SC","Mudah bangkit dari kekecewaan."],
-    ["SD","Mencari cara-cara pengembangan diri yang efektif."],
-    ["AD","Mencermati perubahan dan menelaah kendala-kendalanya."],
-    ["PS","Memakai beragam pendekatan supaya pendapat pribadi diterima."],
-    ["NT","Membina dan mengembangkan hubungan yang saling menguntungkan."],
-    ["SA","Memperhatikan pengaruh emosi pada kinerja."],
-    ["OR","Mengarahkan sumber daya untuk mencapai target."],
-    ["CB","Saling bantu membantu dalam kelompok kerja."],
-    ["CM","Menyampaikan ide baru di hadapan kelompok kerja."],
-    ["SC","Menahan diri untuk tidak terbawa emosi."],
-    ["SD","Melakukan beragam kegiatan untuk mengatasi kekurangan diri."],
-    ["AD","Menyesuaikan pola kerja sesuai dengan kondisi yang berubah-ubah"],
-    ["PS","Membuat orang lain mendukung pendapat pribadi yang disampaikan."],
-    ["NT","Membangun jaringan kerja dengan beragam pihak."],
-    ["SA","Mencermati kondisi emosi orang lain."],
-    ["CL","Mengawasi kesesuaian pelaksanaan dengan rencana kerja."],
-    ["CB","Mendorong orang agar mampu berkontribusi maksimal di tim kerjanya."],
-    ["CM","Menyampaikan pendapat ke kelompok kerja yang baru."],
-    ["SC","Tetap tenang di saat-saat yang menegangkan."],
-    ["SD","Mencari kesempatan untuk mengembangkan diri."],
-    ["AD","Mencari cara terbaik menghadapi perubahan."],
-    ["PS","Membuat orang lain mau menerima gagasan pribadi."],
-    ["NT","Membangun kedekatan dan keakraban kelompok kerja."],
-    ["PL","Mengembangkan target kerja menjadi langkah kerja yang rinci."],
-    ["CL","Mengevaluasi pelaksanaan setiap rencana kerja."],
-    ["CB","Membangun terciptanya semangat kerjasama pada suatu tim."],
-    ["CM","Menyampaikan pendapat secara terbuka."],
-    ["SC","Tetap berpikir jernih ketika berada di bawah tekanan."],
-    ["SD","Menindaklanjuti umpan balik mengenai diri saya."],
-    ["AD","Menyesuaikan diri dengan beragam hal di lingkungan baru."],
-    ["PS","Mempengaruhi orang lain untuk menerima pendapat pribadi."],
-    ["CR","Mengembangkan pendekatan baru untuk hal yang sudah rutin."],
-    ["PL","Merencanakan pekerjaaan secara teratur dan rapi dalam situasi apapun."],
-    ["CL","Mengidentifikasi penyimpangan yang terjadi pada pekerjaan."],
-    ["CB","Berpartisipasi dalam kegiatan kelompok."],
-    ["CM","Bertukar pikiran secara terbuka dengan orang lain."],
-    ["SC","Tetap tenang dalam menghadapi tekanan emosi."],
-    ["SD","Meningkatkan kemampuan diri secara berkesinambungan."],
-    ["AD","Menyesuaikan perilaku dengan tuntutan perubahan."],
-    ["AT","Menganalisa situasi hingga akar permasalahan."],
-    ["CR","Melakukan pekerjaan yang sama dengan cara yang berbeda."],
-    ["PL","Memilah tujuan menjadi langkah-langkah kerja."],
-    ["CL","Memantau kesalahan pelaksanaan pekerjaan."],
-    ["CB","Berkomitmen untuk mendukung keputusan kelompok."],
-    ["CM","Mudah mengekspresikan gagasan."],
-    ["SC","Mudah bangkit dari kekecewaan."],
-    ["SD","Mencari cara-cara pengembangan diri yang efektif."],
-  ]
-  var secondElms = [
-    ["ST","Mendiskusikan strategi jangka panjang."],
-    ["OR","Mengelola kelebihan dan kekurangan sumberdaya saat bekerja."],
-    ["SA","Mencermati kondisi emosi orang lain."],
-    ["NT","Membangun jaringan kerja dengan beragam pihak."],
-    ["PS","Membuat orang lain mendukung pendapat pribadi yang disampaikan."],
-    ["AD","Menyesuaikan pola kerja sesuai dengan kondisi yang berubah-ubah."],
-    ["SD","Melakukan beragam kegiatan untuk mengatasi kekurangan diri."],
-    ["AC","Bekerja dalam suasana yang kompetitif."],
-    ["OR","Memastikan sumberdaya teralokasi secara efektif dan efisien."],
-    ["SA","Memahami sudut pandang orang lain."],
-    ["NT","Membangun kedekatan dan keakraban kelompok kerja."],
-    ["PS","Membuat orang lain mau menerima gagasan pribadi."],
-    ["AD","Mencari cara terbaik menghadapi perubahan."],
-    ["SD","Mencari kesempatan untuk mengembangkan diri."],
-    ["SC","Tetap tenang di saat-saat yang menegangkan."],
-    ["AC","Memiliki dorongan kuat untuk mencapai tujuan"],
-    ["SA","Menangkap situasi emosi orang lain."],
-    ["NT","Mengembangkan jejaring/hubungan sosial seluas mungkin."],
-    ["PS","Mempengaruhi orang lain untuk menerima pendapat pribadi."],
-    ["AD","Menyesuaikan diri dengan beragam hal di lingkungan baru."],
-    ["SD","Menindaklanjuti umpan balik mengenai diri saya."],
-    ["SC","Tetap berpikir jernih ketika berada di bawah tekanan."],
-    ["CM","Menyampaikan pendapat secara terbuka."],
-    ["AC","Menetapkan sasaran yang menantang."],
-    ["NT","Memupuk dan mengelola jejaring/hubungan sosial yang erat."],
-    ["PS","Bernegosiasi dalam rangka pendapat pribadi dapat diterima."],
-    ["AD","Menyesuaikan perilaku dengan tuntutan perubahan."],
-    ["SD","Meningkatkan kemampuan diri secara berkesinambungan."],
-    ["SC","Tetap tenang dalam menghadapi tekanan emosi."],
-    ["CM","Bertukar pikiran secara terbuka dengan orang lain."],
-    ["CB","Berpartisipasi dalam kegiatan kelompok."],
-    ["AC","Bersemangat menghadapi pekerjaan yang menantang."],
-    ["PS","Memakai beragam pendekatan supaya pendapat pribadi diterima."],
-    ["AD","Mencermati perubahan dan menelaah kendala-kendalanya."],
-    ["SD","Mencari cara-cara pengembangan diri yang efektif."],
-    ["SC","Mudah bangkit dari kekecewaan."],
-    ["CM","Saya mudah mengekspresikan gagasan."],
-    ["CB","Berkomitmen untuk mendukung keputusan kelompok."],
-    ["CL","Memantau kesalahan pelaksanaan pekerjaan."],
-    ["AC","Mengerjakan segala sesuatunya lebih baik dari yang lain."],
-    ["AD","Menyesuaikan pola kerja sesuai dengan kondisi yang berubah-ubah."],
-    ["SD","Melakukan beragam kegiatan untuk mengatasi kekurangan diri."],
-    ["SC","Menahan diri untuk tidak terbawa emosi"],
-    ["CM","Menyampaikan ide baru di hadapan kelompok kerja."],
-    ["CB","Saling bantu membantu dalam kelompok kerja."],
-    ["CL","Memastikan tidak ada penyimpangan dalam pekerjaan."],
-    ["PL","Menyiapkan rencana detail termasuk resiko kegagalannya."],
-    ["AC","Bekerja dalam suasana yang kompetitif."],
-    ["SD","Mencari kesempatan untuk mengembangkan diri."],
-    ["SC","Tetap tenang di saat-saat yang menegangkan."],
-    ["CM","Menyampaikan pendapat ke kelompok kerja yang baru."],
-    ["CB","Mendorong orang agar mampu berkontribusi maksimal di tim kerjanya."],
-    ["CL","Mengawasi kesesuaian pelaksanaan dengan rencana kerja."],
-    ["PL","Merencanakan langkah kerja sesuai dengan waktu dan sumberdaya."],
-    ["CR","Mengembangkan metode baru dalam rangka efisiensi kerja."],
-    ["AC","Memiliki dorongan kuat untuk mencapai tujuan."],
-    ["SC","Tetap berpikir jernih ketika berada di bawah tekanan."],
-    ["CM","Menyampaikan pendapat secara terbuka."],
-    ["CB","Membangun terciptanya semangat kerjasama pada suatu tim."],
-    ["CL","Mengevaluasi pelaksanaan setiap rencana kerja."],
-    ["PL","Mengembangkan target kerja menjadi langkah kerja yang rinci."],
-    ["CR","Mempraktekkan cara yang baru pada pekerjaan yang rutin."],
-    ["AT","Mengerjakan hal-hal detail."],
-    ["AC","Menetapkan sasaran yang menantang."],
-    ["CM","Bertukar pikiran secara terbuka dengan orang lain."],
-    ["CB","Berpartisipasi dalam kegiatan kelompok."],
-    ["CL","Mengidentifikasi penyimpangan yang terjadi pada pekerjaan."],
-    ["PL","Merencanakan pekerjaaan secara teratur dan rapi dalam situasi apapun."],
-    ["CR","Mengembangkan pendekatan baru untuk hal yang sudah rutin."],
-    ["AT","Mengurai masalah hingga ke akar permasalahan."],
-    ["CT","Mengenalkan wacana baru untuk suatu kegiatan yang rutin."],
-    ["AC","Bersemangat menghadapi pekerjaan yang menantang."],
-    ["CB","Berkomitmen untuk mendukung keputusan kelompok."],
-    ["CL","Memantau kesalahan pelaksanaan pekerjaan."],
-    ["PL","Memilah tujuan menjadi langkah-langkah kerja."],
-    ["CR","Melakukan pekerjaan yang sama dengan cara yang berbeda."],
-    ["AT","Menganalisa situasi hingga akar permasalahan."],
-    ["CT","Membandingkan teori dengan kenyataan."],
-    ["ST","Menganalisa kemungkinan yang bisa terjadi di masa depan."],
-    ["AC","Mengerjakan segala sesuatunya lebih baik dari yang lain.."],
-    ["CL","Memastikan tidak ada penyimpangan dalam pekerjaan."],
-    ["PL","Menyiapkan rencana detail termasuk resiko kegagalannya."],
-    ["CR","Mendiskusikan ide-ide baru."],
-    ["AT","Menganalisa beragam hal sampai detail."],
-    ["CT","Membuat kesimpulan dari beragam informasi."],
-    ["ST","Mendiskusikan strategi jangka panjang."],
-    ["OR","Mengelola kelebihan dan kekurangan sumberdaya saat bekerja."],
-    ["AC","Bekerja dalam suasana yang kompetitif."],
-    ["PL","Merencanakan langkah kerja sesuai dengan waktu dan sumberdaya."],
-    ["CR","Mengembangkan metode baru dalam rangka efisiensi kerja."],
-    ["AT","Mendalami suatu topik serinci mungkin."],
-    ["CT","Menelaah hal-hal yang bersifat konseptual."],
-    ["ST","Memproyeksikan keadaan sekarang ke masa depan."],
-    ["OR","Memastikan sumberdaya teralokasi secara efektif dan efisien."],
-    ["SA","Memahami sudut pandang orang lain."],
-    ["AC","Memiliki dorongan kuat untuk mencapai tujuan."],
-    ["CR","Mempraktekkan cara yang baru pada pekerjaan yang rutin."],
-    ["AT","Mengerjakan hal-hal detail."],
-    ["CT","Menyimpulkan hasil sebuah proses diskusi."],
-    ["ST","Mengantisipasi kendala yang akan muncul di masa mendatang."],
-    ["OR","Mengorganisir pelaksanaan beragam proyek supaya tidak tumpang tindih."],
-    ["SA","Menangkap situasi emosi orang lain."],
-    ["NT","Mengembangkan jejaring/hubungan sosial seluas mungkin."],
-    ["AC","Menetapkan sasaran yang menantang."],
-    ["AT","Mengurai masalah hingga ke akar permasalahan."],
-    ["CT","Mengenalkan wacana baru untuk suatu kegiatan yang rutin."],
-    ["ST","Membuat simulasi jangka panjang."],
-    ["OR","Memastikan kesesuaian alokasi sumberdaya dengan prioritas kerja."],
-    ["SA","Mengenali kondisi emosi orang lain."],
-    ["NT","Memupuk dan mengelola jejaring/hubungan sosial yang erat."],
-    ["PS","Bernegosiasi dalam rangka pendapat pribadi dapat diterima."],
-    ["AC","Bersemangat menghadapi pekerjaan yang menantang."],
-    ["CT","Membandingkan teori dengan kenyataan."],
-    ["ST","Menganalisa kemungkinan yang bisa terjadi di masa depan."],
-    ["OR","Mengarahkan sumber daya untuk mencapai target."],
-    ["SA","Memperhatikan pengaruh emosi pada kinerja."],
-    ["NT","Membina dan mengembangkan hubungan yang saling menguntungkan."],
-    ["PS","Memakai beragam pendekatan supaya pendapat pribadi diterima."],
-    ["AD","Mencermati perubahan dan menelaah kendala-kendalanya."],
-    ["AC","Mengerjakan segala sesuatunya lebih baik dari yang lain."],
-  ]
-    </script>
-</head>
-<body>
-    <pre>
 <script>
-    document.write("First: " + firstElms.length + "\n")
-    document.write("First: " + secondElms.length + "\n\n")
+function msToTime(duration) {
+  var milliseconds = parseInt((duration % 1000) / 100),
+    seconds = Math.floor((duration / 1000) % 60),
+    minutes = Math.floor((duration / (1000 * 60)) % 60),
+    hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-for (let i=0; i<raw.length; i++) {
-    let elm = raw[i].contents[0].elm
-    let text = raw[i].contents[0].text
-    document.write('["' + elm + '",' + '"' + text +'"]' + ",\n")
+  hours = (hours < 10) ? "0" + hours : hours;
+  minutes = (minutes < 10) ? "0" + minutes : minutes;
+  seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+  return hours + ":" + minutes + ":" + seconds; // + "." + milliseconds;
 }
-document.write("\n\n")
-for (let i=0; i<raw.length; i++) {
-    let elm = raw[i].contents[1].elm
-    let text = raw[i].contents[1].text
-    document.write('["' + elm + '",' + '"' + text +'"]' + ",\n")
+
+function startSecondTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+            timer = duration;
+        }
+    }, 1000);
 }
+
+window.onload = function () {
+    var fiveMinutes = 60 * 120,
+    display = document.querySelector('#sctime');
+    startSecondTimer(fiveMinutes, display);
+
+    var ms = 17297078
+    display2 = document.querySelector('#hrtime');
+    startMinuteTimer(ms, display2)
+
+    // countdownTimeStart()
+};
+
+function startMinuteTimer(duration, display) {
+    var timer = duration, hours, minutes, seconds;
+    setInterval(function () {
+        // hours   = parseInt(timer / 3600, 10)
+        // minutes = parseInt(timer / 60 % 60, 10);
+        // seconds = parseInt(timer % 60, 10);
+        seconds = Math.floor((timer / 1000) % 60),
+        minutes = Math.floor((timer / (1000 * 60)) % 60),
+        hours = Math.floor((timer / (1000 * 60 * 60)) % 24);
+
+        hours = minutes < 10 ? "0" + hours : hours
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = hours + ":" + minutes + ":" + seconds;
+
+        // if (--timer < 0) {
+        //     timer = duration;
+        // }
+    }, 1000);
+}
+
+// Set the date we're counting down to
+// var countDownDate = new Date("Jan 5, 2021 15:37:25").getTime();
+var countDownDate = new Date().getTime() + 5968736;
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+//   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  document.getElementById("demo").innerHTML = hours + ":"
+  + minutes; // + ":" + seconds;
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+
+function timer(ms, id) {
+    let cd = ms + new Date().getTime()
+    setInterval(function() {
+        let now = new Date().getTime(),
+        distance = cd - now;
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        let html = hours + ":" + minutes + ":" + seconds;
+        document.getElementById(id).innerHTML = html;
+
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById(id).innerHTML = "EXPIRED";
+        }
+    }, 2000)
+}
+
+timer(5999736, "demo2")
 
 </script>
-</pre>
+</head>
+<body>
+    <p id="sctime">TIMER</p>
+    <p id="hrtime">TIMER</p>
+<h1>
+    <script>
+    document.write(msToTime(5968736));
+    </script>
+</h1>
+
+<h1 id="demo"></h1>
+
+<h1 id="demo2" style="color:red"></h1>
+
 </body>
 </html>

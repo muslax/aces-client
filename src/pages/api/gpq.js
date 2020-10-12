@@ -1,4 +1,5 @@
 import { ObjectID } from 'mongodb'
+import withSession from 'lib/session'
 import { connect } from 'utils/database'
 import { shuffle } from 'utils/utils'
 import { getItem } from "lib/gpq-1.0";
@@ -44,7 +45,7 @@ const defaultProjection = {
   remains: 1,
   items: 1,
   done: 1,
-  // sequence: 1,
+  sequence: 1,
 }
 
 function newEvidenceDoc(license, projectId, personaId, fullname, items, maxTime) {
@@ -94,7 +95,15 @@ function sequenceArray(sequence) {
   })
 }
 
-export default async (req, res) => {
+// export default withSession(async (req, res) => {
+
+export default withSession(async (req, res) => {
+  const user = req.session.get("user")
+  if (!user || !user.isLoggedIn) {
+    res.status(401).json({ message: "Unauthorized" })
+    return
+  }
+
   const { license, projectId, personaId, fullname, module, sequence, item } = req.query
   const { db } = await connect()
 
@@ -212,6 +221,10 @@ export default async (req, res) => {
     const elapsed = ts - lastTouched
     const finished = seq == items ? ts : null
 
+    console.log('SESSION', req.session.get("upath"))
+    req.session.set("upath", `/persona/gpq/${seq}`)
+    await req.session.save()
+
     try {
       const doc = await db.collection(EVIDENCE_DB).findOneAndUpdate(
         { projectId: projectId, personaId: personaId },
@@ -227,8 +240,10 @@ export default async (req, res) => {
             elapsed: elapsed,
           }}
         },
-        { projection: defaultProjection }
+        { projection: defaultProjection },
+        { returnNewDocument: true }
       )
+      console.log("DOC.VALUE", doc)
       res.status(200).json(doc["value"])
     } catch (error) {
       res.status(500).json({ message: "Server error" })
@@ -238,7 +253,7 @@ export default async (req, res) => {
   else {
     res.status(401).json({ error: "Unauthorized" })
   }
-}
+})
 
 /**
  *
@@ -253,4 +268,6 @@ export default async (req, res) => {
  * ?license=sdi&personaId=5f786e76d11c7699cf09e596&projectId=5f786ad74719017521867285&module=gpq
  * ?license=sdi&personaId=5f786e76d11c7699cf09e596&projectId=5f786ad74719017521867285&fullname=Atik%20Suniar
  * ?license=sdi&projectId=5f786ad74719017521867285&personaId=5f786ee0d11c7699cf09e598&item=1
+ *
+ * ?license=sdi&personaId=5f786ee0d11c7699cf09e598&projectId=5f786ad74719017521867285&sequence=1
 */
