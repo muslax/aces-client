@@ -2,12 +2,13 @@ import { memo, createContext, useContext, useState } from "react"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import fetchJson from 'lib/fetchJson'
-import useUser from 'lib/useUser'
+import useUser, { updateUserPath } from 'lib/useUser'
 import Layout from "components/Layout";
 import useSWR from "swr"
 
 export default function Persona() {
   const { user } = useUser({ redirectTo: "/" })
+  const updatePath = updateUserPath(user, "/persona")
 
   if (!user || !user.isLoggedIn) return <div></div>
 
@@ -65,6 +66,17 @@ function getSims(user, modules) {
   return tests
 }
 
+function clearTimerHandler(intervalHandle) {
+  if (typeof intervalHandle !== 'undefined') {
+    console.log("Found: intervalHandle")
+    clearInterval(intervalHandle)
+    intervalHandle = 0
+  } else {
+    console.log("Not found: intervalHandle")
+  }
+  return true
+}
+
 function Header() {
   const { user, state } = useContext(UserContext)
 
@@ -114,10 +126,18 @@ const TestCard = ({module}) => {
               )}
               {module.type != "gpq" && (
                 <>
-                  <div className="rounded-full bg-gray-400 h-8 w-8 mb-4 flex items-center justify-center">&nbsp;</div>
-                  <button disbled className="inline-block bg-white rounded border border-gray-400 px-4 py-2 text-gray-500">Masuk</button>
+                  <div className="mod-status rounded-full bg-blue-400 h-8 w-8 mb-4 flex items-center justify-center">&nbsp;</div>
+                  <Link href="/aime">
+                    <a className="mod-link inline-block bg-white rounded border border-gray-400 px-4 py-2 text-gray-500 hover:border-blue-500 hover:bg-blue-500 hover:text-white">Masuk</a>
+                  </Link>
                 </>
               )}
+              {/* {module.type != "gpqs" && (
+                <>
+                  <div className="rounded-full bg-gray-400 h-8 w-8 mb-4 flex items-center justify-center">&nbsp;</div>
+                  <button disabled className="inline-block bg-white rounded border border-gray-400 px-4 py-2 text-gray-500">Masuk</button>
+                </>
+              )} */}
             </div>
           </div>
         </div>
@@ -206,9 +226,9 @@ function UserModules() {
   return (
     <div>
       <h3 className="text-md text-gray-700 uppercase tracking-wide mb-2">Test Mandiri Online</h3>
-      {tests.map((mod) => ( <TestCard module={mod} /> ))}
+      {tests.map((mod) => ( <TestCard key={mod.slug} module={mod} /> ))}
       <h3 className="text-md text-gray-700 uppercase tracking-wide mt-8 mb-2">Simulasi / Tatap Muka</h3>
-      {simulations.map((mod) => ( <SimCard module={mod} /> ))}
+      {simulations.map((mod) => ( <SimCard key={mod.slug} module={mod} /> ))}
     </div>
   )
 }
@@ -217,6 +237,7 @@ function Content() {
   const { user, state, modules } = useContext(UserContext)
   const { mutateUser } = useUser({ redirectTo: '/' })
   const router = useRouter()
+  const timerIsClear = clearTimerHandler()
 
   return (
     <div className="">
@@ -241,7 +262,7 @@ function Content() {
         <UserModules />
       </div>
 
-      {/* <pre className="pre">{JSON.stringify(user, null, 2)}</pre> */}
+      <pre className="pre">{JSON.stringify(user, null, 2)}</pre>
       {/* <pre className="pre">{JSON.stringify(modules, null, 2)}</pre> */}
     </div>
   )

@@ -1,7 +1,7 @@
 import { createContext, memo, useContext, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import useUser from 'lib/useUser'
+import useUser, { updateUserPath } from 'lib/useUser'
 import fetchJson from 'lib/fetchJson'
 import Layout from "components/Layout";
 import useSWR, { mutate } from 'swr';
@@ -17,6 +17,7 @@ const PAUSED = 9
 
 export default function GPX() {
   const { user } = useUser({ redirectTo: "/" })
+  const updatePath = updateUserPath(user, "/aime")
 
   if (!user || !user.isLoggedIn) return <div></div>
 
@@ -41,7 +42,7 @@ const TestContext = createContext()
 function TestProvider({ user, children }) {
   const [state, setState] = useState(-1);
   const [currentGain, setCurrentGain] = useState(0);
-  const [tempState, setTempState] = useState(0);
+  const [tempState, setTempState] = useState(-1);
   const [submitting, setSubmitting] = useState(false);
 
   const url1 = buildApiUrl(user, { fullname: user.fullname })
@@ -241,9 +242,9 @@ function Header() {
       {state > 0 && (
         <div className="flex flex-row text-sm text-gray-700 font-light px-1s py-2 border-b">
           <div className="flex-grow">{module?.description}</div>
-          <div className="flex flex-1 flex-row-reverse text-right text-xs font-mono">
-            <span id="timer" className="w-32 pr-1"></span>
-            <span>R {progress.remains}</span>{` `}
+          <div className="flex-1 text-right text-xs font-mono">
+            <span id="timer" className="w-32 mr-2"></span>
+            <span>R {progress.remains}</span>
           </div>
         </div>
       )}
@@ -264,6 +265,7 @@ function Prepare() {
 
   return (
     <div className="text-gray-600 font-light max-w-2xl mx-auto">
+      <div id="timer" className="hidden" />{/* Timer hack */}
       <h1 className="text-3xl text-center mb-6">Tentang tes ini</h1>
       <p className="my-6">
         Tes ini terdiri dari {module?.items} soal dengan waktu penyelesaian
@@ -282,6 +284,7 @@ function Prepare() {
         lacinia imperdiet conubia fusce auctor, ac urna purus bibendum viverra
         tincidunt blandit duis.
       </p>
+      <pre className="pre my-8 text-red-600">{JSON.stringify(progress, null, 2)}</pre>
       <p className="text-center my-12">
         <button onClick={(event) => {
           enterTest(user, progress);
@@ -297,6 +300,7 @@ function Guide() {
 
   return (
     <div className="max-w-2xl mx-auto text-gray-700">
+      <div id="timer" className="hidden" />{/* Timer hack */}
       {progress?.done == progress?.items && (
         <>
         <h1 className="text-3xl text-gray-600 text-center font-light mt-32 mb-8">Anda sudah menyelesaikan test ini</h1>
@@ -336,7 +340,7 @@ function Guide() {
 }
 
 function Paused() {
-  const { tempState, setState, setCurrentGain, user } = useContext(TestContext)
+  const { tempState, setState, setTempState, setCurrentGain, user } = useContext(TestContext)
   const { mutateUser } = useUser({ redirectTo: '/' })
   const router = useRouter()
 
@@ -348,6 +352,9 @@ function Paused() {
           <Link href="/api/signout">
             <a onClick={async(e) => {
               e.preventDefault()
+              setState(-1)
+              setCurrentGain(0)
+              setTempState(-1)
               clearInterval(intervalHandle)
               intervalHandle = 0;
               await mutateUser(fetchJson('/api/signout'))
@@ -538,6 +545,8 @@ function TestContent() {
 
 function MainContent() {
   const { state } = useContext(TestContext)
+
+  // const x = timer(progress.remains, "timer", state)
 
   return (
     <>

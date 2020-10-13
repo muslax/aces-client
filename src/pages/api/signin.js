@@ -23,7 +23,8 @@ export default withSession(async (req, res) => {
         license: person.license,
         projectId: project,
         projectTitle: projects[0].title,
-        path: path,
+        // path: path,
+        // userPath: path,
         type: loginType,
         fullname: person.fullname,
         username: person.username,
@@ -35,7 +36,8 @@ export default withSession(async (req, res) => {
         license: person.license,
         projectId: project,
         projectTitle: projects[0].title,
-        path: path,
+        // path: path,
+        // userPath: path,
         type: loginType,
         _id: person._id,
         fullname: person.name,
@@ -44,7 +46,7 @@ export default withSession(async (req, res) => {
       }
       console.log(user)
       req.session.set('user', user)
-      req.session.set("path", "default-path")
+      // req.session.set("userPath", `/${loginType}`)
       await req.session.save()
       res.json(user)
     }

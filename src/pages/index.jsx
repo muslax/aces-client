@@ -64,6 +64,7 @@ export default function Sample() {
 
   return (
     <>
+      <div id="timer" className="hidden" />{/* Timer hack */}
       {(acctries > 2 || logtries > 2) && <Blackened />}
       {(acctries < 3 && logtries < 3) && (
       <div className="flex flex-col justify-center items-center min-h-screen">
@@ -110,7 +111,7 @@ const AccessForm = ({ errorMessage, onSubmit }) => (
     <form onSubmit={onSubmit}>
       <div className="mb-4">
         <label className="block text-md font-bold mb-6" htmlFor="accessCode">Kode Akses</label>
-        <input type="text" id="accessCode" name="accessCode" required autoFocus autoComplete="off"
+        <input type="text" id="accessCode" name="accessCode" value="sdi-abk" required autoFocus autoComplete="off"
         className={input} />
       </div>
       {errorMessage && <p className="text-red-500 my-3">{errorMessage}</p>}

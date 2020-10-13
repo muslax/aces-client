@@ -13,6 +13,9 @@ module.exports = {
   },
   variants: {
     backgroundColor: ['responsive', 'hover', 'active'],
+    margin: ['responsive', 'hover', 'focus'],
+    padding: ['responsive', 'hover', 'focus'],
+    backgroundOpacity: ['hover'],
   },
   plugins: [],
 }

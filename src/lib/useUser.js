@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import Router from 'next/router'
 import useSWR from 'swr'
+import fetchJson from 'lib/fetchJson'
 
 export default function useUser({
   redirectTo = false,
@@ -24,4 +25,14 @@ export default function useUser({
   }, [user, redirectIfFound, redirectTo])
 
   return { user, mutateUser }
+}
+
+export async function updateUserPath(path) {
+  await fetchJson("/api/user", {
+    method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({ path: path }),
+  })
 }

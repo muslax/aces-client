@@ -189,6 +189,8 @@ export default withSession(async (req, res) => {
   else if (req.method == 'PUT') {
     const body = JSON.parse(req.body)
     const { action, update } = body
+    console.log("action", action)
+    console.log("update", update)
     const ts = new Date()
 
     let props = { touched: ts.getTime(), updatedAt: ts }
@@ -240,8 +242,7 @@ export default withSession(async (req, res) => {
             elapsed: elapsed,
           }}
         },
-        { projection: defaultProjection },
-        { returnNewDocument: true }
+        { projection: defaultProjection, returnOriginal: false }
       )
       console.log("DOC.VALUE", doc)
       res.status(200).json(doc["value"])
