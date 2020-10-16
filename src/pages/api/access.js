@@ -1,4 +1,4 @@
-import { connect } from 'utils/database'
+import { connect } from 'lib/database'
 
 /**
  * To check project, use req body {"code":"sdi-abk"}

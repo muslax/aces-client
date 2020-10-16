@@ -1,10 +1,10 @@
 import withSession from 'lib/session'
-import { GPQEvidenceTemplate, GPQProjection } from 'lib/evidence'
+import { DefaultProjection, EvidenceTemplate } from 'lib/evidence'
 import { connect } from 'lib/database'
-// import { GPQ_INFO } from "lib/gpq-1.0";
+// import { INFO } from 'lib/sjt-asn-1.0'
 import { ACESModule } from 'lib/modules'
 
-const EVIDENCE_DB = "ev_gpq"
+const EVIDENCE_DB = "ev_sjt"
 
 export default withSession(async (req, res) => {
   const user = req.session.get("user")
@@ -15,7 +15,6 @@ export default withSession(async (req, res) => {
     return
   }
 
-  // const { license, projectId, personaId, fullname, module, sequence, item } = req.query
   const { license, project, persona, fullname, create } = req.query
 
   // Only accepts request with project, and persona queries
@@ -32,7 +31,7 @@ export default withSession(async (req, res) => {
     try {
       const doc = await db.collection(EVIDENCE_DB).findOne(
         { projectId: project, personaId: persona },
-        { projection: GPQProjection }
+        { projection: DefaultProjection }
       )
 
       if (doc != null) {
@@ -42,8 +41,8 @@ export default withSession(async (req, res) => {
         // Only create if requested
         if (license && fullname && create) {
           console.log("Creating object...")
-          const info = ACESModule('gpq-1.0', "info")
-          const props = GPQEvidenceTemplate(license, project, persona, fullname, info.items, info.maxTime)
+          const info = ACESModule('sjt-asn-1.0', 'info')
+          const props = EvidenceTemplate(license, project, persona, fullname, info.items, info.maxTime)
           const ndoc = await db.collection(EVIDENCE_DB).insertOne(props)
           const rsdoc = {
             projectId:  ndoc["ops"][0]["projectId"],
@@ -58,7 +57,6 @@ export default withSession(async (req, res) => {
             remains:    ndoc["ops"][0]["remains"],
             items:      ndoc["ops"][0]["items"],
             done:       ndoc["ops"][0]["done"],
-            sequence:   ndoc["ops"][0]["sequence"],
           }
           res.status(200)
           res.json(rsdoc)
@@ -72,7 +70,7 @@ export default withSession(async (req, res) => {
   // Request to persist evidence
   else if (req.method == "POST") {
     const body = JSON.parse(req.body)
-    const { seq, wbSeq, items, elm, statement, lastTouched } = body
+    const { seq, mostElm, mostText, leastElm, leastText, lastTouched } = body
     const date = new Date()
     const ts = date.getTime()
     const elapsed = ts - lastTouched
@@ -86,15 +84,17 @@ export default withSession(async (req, res) => {
           $set: { touched: ts, finished: finished, updatedAt: date },
           $push: { rows: {
             seq: seq,
-            wbSeq: wbSeq,
-            elm: elm,
-            statement: statement,
+            mostElm: mostElm,
+            mostText: mostText,
+            leastElm: leastElm,
+            leastText: leastText,
             saved: ts,
             elapsed: elapsed,
           }}
         },
-        { projection: GPQProjection, returnOriginal: false }
+        { projection: DefaultProjection, returnOriginal: false }
       )
+
       const rsdoc = doc["value"]
       console.log(rsdoc)
       res.status(200)
@@ -122,10 +122,9 @@ export default withSession(async (req, res) => {
       const doc = await db.collection(EVIDENCE_DB).findOneAndUpdate(
         { projectId: project, personaId: persona },
         { $set: props },
-        { projection: GPQProjection, returnOriginal: false },
+        { projection: DefaultProjection, returnOriginal: false },
       )
-      res.status(200)
-      res.json(doc["value"])
+      res.status(200).json(doc["value"])
     } catch (error) {
       res.status(500).json({ message: "Could not update database." })
     }
@@ -136,4 +135,3 @@ export default withSession(async (req, res) => {
     res.status(400).json({ message: "Bad request" })
   }
 })
-

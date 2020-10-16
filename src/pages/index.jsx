@@ -10,7 +10,7 @@ export default function Sample() {
   const [accessErrorMsg, setAccessErrorMsg] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const { user } = useUser({ redirectTo: false })
-  const redirect = user?.role ? user?.role : user?.type
+  const redirect = user?.role ? user?.role : 'welcome' // user?.type
   const { mutateUser } = useUser({ redirectTo: redirect, redirectIfFound: true })
 
   async function handleAccessSubmit(e) {
@@ -44,8 +44,6 @@ export default function Sample() {
       path: e.currentTarget.projectPath.value,
       loginType: e.currentTarget.loginType.value,
     }
-
-    console.log(JSON.stringify(body))
 
     try {
       await mutateUser(

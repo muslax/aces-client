@@ -1,22 +1,29 @@
+// project.js
+// - id must be supplied 5f786ad74719017521867285
+// - graball      -> returns whole project document
+// - modules      -> return modules sub document
+// - modules=type -> returns module with type
+
 import { ObjectID } from 'mongodb'
 import withSession from 'lib/session'
-import { connect } from 'utils/database'
+import { connect } from 'lib/database'
 
-const PROJECT_DB = "projects"
 
-function decideModuleProjection(modules) {
-  let projection = { _id: 0 }
-  if (modules.toLowerCase() == "all") {
-    projection = { _id: 0, modules: 1 }
-  } else {
-    projection = {
-      _id: 0,
-      modules: {
-        $elemMatch: { type: modules }
-      }
-    }
+function fromQuery(query) {
+  const {graball, modules} = query
+  if (graball != undefined) {
+    return {}
   }
-  return projection
+  else if(modules == undefined) {
+    return { _id: 0, modules: 0 }
+  }
+  else if (!modules || modules == "all") {
+    return { _id: 0, modules: 1 }
+  } else {
+    return { _id: 0, modules: {
+      $elemMatch: { type: modules }
+    }}
+  }
 }
 
 export default withSession(async(req, res) => {
@@ -31,29 +38,21 @@ export default withSession(async(req, res) => {
     return
   }
 
-  const { id, modules } = req.query
+  const { id, modules, graball } = req.query
   const { db } = await connect()
 
-  console.log(id, modules)
-
   try {
-    const projection = modules ? decideModuleProjection(modules) : {
-      // Returns all fields
-      // modules: 0,
-      // createdAt: 0,
-      // updatedAt: 0,
-    }
-    console.log(projection)
-    const rs = await db.collection(PROJECT_DB).findOne(
-      { _id: ObjectID(id) }, { projection: projection }
+    const projection = fromQuery(req.query)
+    const rs = await db.collection("projects").findOne(
+      { _id: ObjectID(id) },
+      { projection: projection }
     )
 
     if (modules == undefined) {
       res.status(200).json( rs )
-    } else if (modules == "all") {
-      res.status(200).json( rs["modules"] )
     } else {
-      res.status(200).json( rs["modules"][0] )
+      const rsdoc = (!modules || modules == "all") ? rs["modules"] : rs["modules"][0]
+      res.status(200).json(rsdoc)
     }
   } catch (error) {
     res.status(404).json({ message: "Not found" })
