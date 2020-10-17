@@ -34,12 +34,14 @@ export const GPQProjection = {
 }
 
 export function EvidenceTemplate(license, project, persona, fullname, items, maxTime) {
+  items = parseInt(items)
+  maxTime = parseInt(maxTime)
   return {
     license: license,
     projectId: project,
     personaId: persona,
     fullname: fullname,
-    initiated: null,
+    initiated: new Date().getTime(), // created and initiated
     started: null,
     finished: null,
     touched: null,

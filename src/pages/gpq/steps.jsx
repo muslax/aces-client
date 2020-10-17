@@ -8,7 +8,7 @@ import { ACESModule, ACESTestItem, getTestSlug } from "lib/modules";
 
 const BASE_API_URL = "/api/gpq"
 
-export default function AimeSteps() {
+export default function GPQSteps() {
   const { user } = useUser({ redirectTo: "/" })
 
   if (!user || !user.isLoggedIn) return <div></div>

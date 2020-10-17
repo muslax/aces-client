@@ -8,7 +8,7 @@ const SJT_ASN_1_0 = {
     title: "SJT untuk ASN",
     description: "SJT lorem ipsum dolor sis amet.",
     items: 27,
-    maxTime: 6480000, // 27 * 2.5 * 60 * 1000
+    maxTime: 4050000, // 27 * 2.5 * 60 * 1000
   },
   teaserTail: "Menurut Anda, pilihan mana yang PALING EFEKTIF dan mana yang PALING TIDAK EFEKTIF?",
   items: {

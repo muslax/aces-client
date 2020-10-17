@@ -15,7 +15,8 @@ export default withSession(async (req, res) => {
     return
   }
 
-  const { license, project, persona, fullname, create } = req.query
+  const { license, project, persona, fullname, items, maxTime, create } = req.query
+  console.log("QUERY", req.query)
 
   // Only accepts request with project, and persona queries
   if (!project || !persona) {
@@ -35,14 +36,17 @@ export default withSession(async (req, res) => {
       )
 
       if (doc != null) {
+        console.log("Sending RESPONSE...")
         res.status(200)
         res.json(doc)
       } else {
         // Only create if requested
         if (license && fullname && create) {
           console.log("Creating object...")
-          const info = ACESModule('sjt-asn-1.0', 'info')
-          const props = EvidenceTemplate(license, project, persona, fullname, info.items, info.maxTime)
+          // const info = ACESModule('sjt-asn-1.0', 'info')
+          // console.log("infor", info)
+          const props = EvidenceTemplate(license, project, persona, fullname, items, maxTime)
+          console.log(props)
           const ndoc = await db.collection(EVIDENCE_DB).insertOne(props)
           const rsdoc = {
             projectId:  ndoc["ops"][0]["projectId"],
@@ -58,8 +62,12 @@ export default withSession(async (req, res) => {
             items:      ndoc["ops"][0]["items"],
             done:       ndoc["ops"][0]["done"],
           }
+          console.log("Sending RESPONSE...")
           res.status(200)
           res.json(rsdoc)
+        } else {
+          console.log("Sending NOT FOUND...")
+          res.status(404).json({ message: "Not found" })
         }
       }
     } catch (error) {
@@ -94,7 +102,7 @@ export default withSession(async (req, res) => {
         },
         { projection: DefaultProjection, returnOriginal: false }
       )
-
+      console.log("Sending POST RESPONSE...")
       const rsdoc = doc["value"]
       console.log(rsdoc)
       res.status(200)
@@ -124,6 +132,8 @@ export default withSession(async (req, res) => {
         { $set: props },
         { projection: DefaultProjection, returnOriginal: false },
       )
+
+      console.log("Sending PUT RESPONSE...")
       res.status(200).json(doc["value"])
     } catch (error) {
       res.status(500).json({ message: "Could not update database." })

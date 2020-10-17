@@ -27,7 +27,7 @@ const ACES_MODULES = {
  */
 export function ACESModule(slug, key) {
   const decoded = slug?.replaceAll(/\-|\./g, '_')
-  console.log(slug, decoded, key)
+  // console.log(slug, decoded, key)
   return ACES_MODULES[decoded][key] ? ACES_MODULES[decoded][key] : null
 }
 
@@ -37,9 +37,10 @@ export function ACESModule(slug, key) {
  * @param {number} seq Item number
  */
 export function ACESTestItem(slug, seq) {
-  const decoded = slug.replaceAll(/\-|\./g, '_')
-  console.log(decoded)
-  return ACES_MODULES[decoded]['items'][seq] ? ACES_MODULES[decoded]['items'][seq] : null
+  // console.log("slug", slug)
+  const decoded = slug?.replace(/\-|\./g, '_')
+  // console.log(ACES_MODULES[decoded])
+  return ACES_MODULES[decoded]?.items[seq] ? ACES_MODULES[decoded]?.items[seq] : null
 }
 
 /**
@@ -48,7 +49,7 @@ export function ACESTestItem(slug, seq) {
  * @param {string} type
  */
 export function getTestSlug(user, type) {
-  console.log(user)
+  // console.log(user)
   for (let i = 0; i < user.tests.length; i++) {
     if (user.tests[i].indexOf(type) == 0) return user.tests[i]
   }
