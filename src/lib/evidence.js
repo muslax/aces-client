@@ -55,6 +55,8 @@ export function EvidenceTemplate(license, project, persona, fullname, items, max
 }
 
 export function GPQEvidenceTemplate(license, project, persona, fullname, items, maxTime) {
+  items = parseInt(items)
+  maxTime = parseInt(maxTime)
   let arr = []
   for (let i=0; i<items; i++) { arr.push(i + 1) }
   const randomSeqs = shuffle(arr).join(' ')
@@ -63,7 +65,7 @@ export function GPQEvidenceTemplate(license, project, persona, fullname, items, 
     projectId: project,
     personaId: persona,
     fullname: fullname,
-    initiated: null,
+    initiated: new Date().getTime(), // created and initiated
     started: null,
     finished: null,
     touched: null,

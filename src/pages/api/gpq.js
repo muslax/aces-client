@@ -1,10 +1,16 @@
 import withSession from 'lib/session'
 import { GPQEvidenceTemplate, GPQProjection } from 'lib/evidence'
 import { connect } from 'lib/database'
-// import { GPQ_INFO } from "lib/gpq-1.0";
 import { ACESModule } from 'lib/modules'
+// import { ACESModule } from 'lib/modules'
+// import GPQ_1_0 from 'lib/gpq-1.0'
 
 const EVIDENCE_DB = "ev_gpq"
+
+// /api/gpq?
+// license=sdi&
+// project=5f786ad74719017521867285&
+// persona=5f786e76d11c7699cf09e596
 
 export default withSession(async (req, res) => {
   const user = req.session.get("user")
@@ -16,7 +22,9 @@ export default withSession(async (req, res) => {
   }
 
   // const { license, projectId, personaId, fullname, module, sequence, item } = req.query
-  const { license, project, persona, fullname, create } = req.query
+  const { license, project, persona, fullname, items, maxTime, create } = req.query
+  // const { license, project, persona, fullname, slug, create } = req.query
+  console.log("QUERY", req.query)
 
   // Only accepts request with project, and persona queries
   if (!project || !persona) {
@@ -36,14 +44,19 @@ export default withSession(async (req, res) => {
       )
 
       if (doc != null) {
+        console.log("Sending RESPONSE...")
         res.status(200)
         res.json(doc)
       } else {
         // Only create if requested
         if (license && fullname && create) {
-          console.log("Creating object...")
-          const info = ACESModule('gpq-1.0', "info")
-          const props = GPQEvidenceTemplate(license, project, persona, fullname, info.items, info.maxTime)
+          console.log("Creating object...SSSSS")
+          // ???? ACESModule wont run here ??????
+          // const info =  ACESModule(slug, "info")
+          // console.log(info)
+          // const props = GPQEvidenceTemplate(license, project, persona, fullname, info.items, info.maxTime)
+          const props = GPQEvidenceTemplate(license, project, persona, fullname, items, maxTime)
+          console.log(props)
           const ndoc = await db.collection(EVIDENCE_DB).insertOne(props)
           const rsdoc = {
             projectId:  ndoc["ops"][0]["projectId"],
@@ -60,6 +73,7 @@ export default withSession(async (req, res) => {
             done:       ndoc["ops"][0]["done"],
             sequence:   ndoc["ops"][0]["sequence"],
           }
+          console.log("Sending RESPONSE...")
           res.status(200)
           res.json(rsdoc)
         }
@@ -72,14 +86,18 @@ export default withSession(async (req, res) => {
   // Request to persist evidence
   else if (req.method == "POST") {
     const body = JSON.parse(req.body)
-    const { seq, wbSeq, items, elm, statement, lastTouched } = body
+    console.log("BODY", body)
+    const { seq, wbSeq, elm, items, statement, lastTouched } = body
     const date = new Date()
     const ts = date.getTime()
     const elapsed = ts - lastTouched
     const finished = seq == items ? ts : null
 
+    console.log("TRYING.....")
+    console.log(GPQProjection)
+
     try {
-      const doc = await db.collection(EVIDENCE_DB).findOneAndUpdate(
+      const rs = await db.collection(EVIDENCE_DB).findOneAndUpdate(
         { projectId: project, personaId: persona },
         {
           $inc: { done: 1, netTime: elapsed, remains: -elapsed },
@@ -91,14 +109,17 @@ export default withSession(async (req, res) => {
             statement: statement,
             saved: ts,
             elapsed: elapsed,
-          }}
+          }},
         },
         { projection: GPQProjection, returnOriginal: false }
       )
-      const rsdoc = doc["value"]
+      const rsdoc = rs["value"]
+      console.log("Sending POST RESPONSE...")
       console.log(rsdoc)
       res.status(200)
       res.json(rsdoc)
+      // console.log("DOC.VALUE", rs)
+      // res.status(200).json(rs["value"])
     } catch (error) {
       res.status(500).json({ message: "Could not persist user data" })
     }
@@ -124,6 +145,7 @@ export default withSession(async (req, res) => {
         { $set: props },
         { projection: GPQProjection, returnOriginal: false },
       )
+      console.log("Sending PUT RESPONSE...")
       res.status(200)
       res.json(doc["value"])
     } catch (error) {

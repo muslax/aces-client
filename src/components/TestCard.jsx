@@ -12,11 +12,14 @@ import { getApiUrl, enterTest, startTest } from "lib/utils";
 export default function TestCard ({ user, module }) {
   // Extract API path from module's slug
   const path = module?.slug?.substr(0, module?.slug.lastIndexOf('-'))
-  const url = `/api/${path}?license=${user?.license}&project=${user?.projectId}&persona=${user?._id}`
+  const progressUrl = `/api/${path}?license=${user?.license}&project=${user?.projectId}&persona=${user?._id}`
   const swrOptions = { refreshInterval: 0, revalidateOnFocus: false }
-  const { data: progress } = useSWR(url, fetchJson, swrOptions)
+  const { data: progress } = useSWR(progressUrl, fetchJson, swrOptions)
   const acesModule = ACESModule(module?.slug, "info")
   const router = useRouter()
+  // We supply items and maxTime for new document creation
+  const initUrl = getApiUrl(`/api/${path}`, user, {fullname: user.fullname, items: acesModule.items, maxTime: acesModule.maxTime, create: true})
+  // const initUrl = getApiUrl(`/api/${path}`, user, {fullname: user.fullname, slug: acesModule.slug, create: true})
 
   // p-1 -mx-1
 
@@ -48,7 +51,9 @@ export default function TestCard ({ user, module }) {
                 <Link href={`/${path}`}>
                   <a onClick={(event) => {
                     event.preventDefault()
-                    enterTest(`/api/${path}`, user, progress)
+                    // enterTest(`/api/${path}`, user, progress)
+                    console.log("initUrl", initUrl)
+                    initTest(initUrl)
                     router.push(`/${path}`)
                   }} className="mod-link inline-block bg-white rounded border border-gray-400 px-4 py-2 text-gray-500 hover:border-blue-500 hover:bg-blue-500 hover:text-white">Masuk</a>
                 </Link>
@@ -77,7 +82,20 @@ export default function TestCard ({ user, module }) {
       }
       `}</style>
     </div>
-    {/* <pre className="pre">{JSON.stringify(progress, null, 2)}</pre> */}
+    <pre className="pre">{JSON.stringify(acesModule, null, 2)}</pre>
     </>
   )
+}
+
+export async function initTest(url) {
+  console.log(url)
+  await fetchJson(url, {
+    method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      }
+  })
+
+  // const mutateUrl = getApiUrl(baseUrl, user, { fullname: user.fullname })
+  // mutate(mutateUrl)
 }

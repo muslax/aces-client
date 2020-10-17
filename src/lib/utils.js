@@ -70,3 +70,14 @@ export function sequenceArray(sequence) {
     return parseInt(d)
   })
 }
+
+export function msToTimeString(ms, bSecond = false) {
+  const h = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const m = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+  const s = Math.floor((ms % (1000 * 60)) / 1000);
+  const hours   = (h < 10) ? "0" + h : h
+  const minutes = (m < 10) ? "0" + m : m
+  const seconds = (s < 10) ? "0" + s : s
+  if (bSecond) return hours + ":" + minutes + ":" + seconds
+  return hours + ":" + minutes
+}

@@ -57,23 +57,6 @@ function TestProvider({ user, children }) {
   )
 }
 
-async function _enterTest(user, testSlug, progress) {
-  // const url = buildApiUrl(user, {slug: testSlug}) // Empty license, but OK
-  const url = getApiUrl(BASE_API_URL, user, {slug: testSlug})
-  const update = progress?.initiated ? false : true
-  await fetchJson(url, {
-    method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({ action: "init", update: update }),
-  })
-
-  // const url1 = buildApiUrl(user, { fullname: user.fullname })
-  const mutateUrl = getApiUrl(BASE_API_URL, user, { fullname: user.fullname })
-  mutate(mutateUrl)
-}
-
 function About() {
   const { user, progress } = useContext(TestContext)
 
@@ -140,7 +123,7 @@ function Header() {
         </div>
         <div className="flex flex-0 text-right pl-3 font-bold">
           {/* <span className=" bg-yellow-600 bg-opacity-25 px-3 border-l border-r border-yellow-500">{progress ? (progress.done + 1) : '-'}</span> */}
-          <span className="pl-3">{progress ? progress.items : '-'}</span>
+          <span className="pl-3">{module ? module.items : '-'}</span>
         </div>
       </div>
 

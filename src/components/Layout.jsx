@@ -64,20 +64,23 @@ const Layout = ({ title, children }) => (
     </main>
   </>
 )
+
+export default Layout
+
 export class XLayout extends React.Component {
 
   componentDidMount () {
     console.log("DID MOUNT")
     const div = document.getElementById("timer")
-   if (div && div.innerText) {
-     const ms = parseInt(div.innerText)
-     let h = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-     let m = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-     let hours = (h < 10) ? "0" + h : h
-     let minutes = (m < 10) ? "0" + m : m
-     let text = hours + ":" + minutes
-     div.innerText = text
-   }
+    if (div && div.innerText) {
+      const ms = parseInt(div.innerText)
+      let h = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      let m = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+      let hours = (h < 10) ? "0" + h : h
+      let minutes = (m < 10) ? "0" + m : m
+      let text = hours + ":" + minutes
+      div.innerText = '' // text
+    }
   }
 
   render () {
@@ -143,5 +146,3 @@ export class XLayout extends React.Component {
     )
   }
 }
-
-export default Layout

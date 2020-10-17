@@ -26,9 +26,9 @@ const ACES_MODULES = {
  * @returns module data or null
  */
 export function ACESModule(slug, key) {
-  slug = slug.replaceAll(/\-|\./g, '_')
-  console.log(slug, key)
-  return ACES_MODULES[slug][key] ? ACES_MODULES[slug][key] : null
+  const decoded = slug?.replaceAll(/\-|\./g, '_')
+  console.log(slug, decoded, key)
+  return ACES_MODULES[decoded][key] ? ACES_MODULES[decoded][key] : null
 }
 
 /**
@@ -37,9 +37,9 @@ export function ACESModule(slug, key) {
  * @param {number} seq Item number
  */
 export function ACESTestItem(slug, seq) {
-  slug = slug.replaceAll(/\-|\./g, '_')
-  console.log(slug)
-  return ACES_MODULES[slug]['items'][seq] ? ACES_MODULES[slug]['items'][seq] : null
+  const decoded = slug.replaceAll(/\-|\./g, '_')
+  console.log(decoded)
+  return ACES_MODULES[decoded]['items'][seq] ? ACES_MODULES[decoded]['items'][seq] : null
 }
 
 /**
