@@ -9,6 +9,7 @@ import { Intray2Body, Intray2Template } from "lib/evidence";
 import { func } from 'prop-types';
 
 const BASE_API_URL = "/api/intray-n"
+const MAX_TAB_NUM = 9
 
 export default function  Intray() {
   const { user } = useUser({ redirectTo: "/" })
@@ -35,10 +36,20 @@ const TestContext = createContext();
 function TestProvider({ user, children }) {
   const testSlug = "intray-n"
   const [tab, setTab] = useState(1)
-  const [lastTab, setLastTab] = useState(1) // may be not used
-  const [biggestTabNum, setBiggestTabNum] = useState(1)
-  const [currentTask, setCurrentTask] = useState({ taskName: '', values: [] })
-  const [task1, setTask1] = useState({t1: "", t2: "", t3: ""})
+  const [prevTab, setPrevTab] = useState(0)
+  const [lastTab, setLastTab] = useState(0)
+  const [visitStack, setVisitStack] = useState([])
+
+  const [task1, setTask1] = useState({ t1: "", t2: "", t3: "" })
+  const [task2, setTask2] = useState({ t1: "", t2: "", t3: "", t4: "", t5: "" })
+  const [task3, setTask3] = useState({ t1: "", t2: "", t3: "", t4: "", t5: "" })
+  const [task4, setTask4] = useState({ t1: "", t2: "", t3: "", t4: "", p1: "", p2: "", p3: "", p4: "" })
+  const [task5, setTask5] = useState({ i1: "", i2: "", i3: "", i4: "", i5: "" })
+  const [task6, setTask6] = useState({ u1: "", u2: "", u3: "", u4: "", u5: "" })
+  const [task7, setTask7] = useState({ u1: "", u2: "", u3: "", u4: "", a1: "", a2: "", a3: "", a4: "" })
+  const [task8, setTask8] = useState({ w1: "", e1: "", e2: "", t1: "", t2: "" })
+  const [task9, setTask9] = useState({ u1: "", u2: "", u3: "", u4: "", u5: "" })
+
   const swrOptions = process.env.NODE_ENV == 'development' ? {
     refreshInterval: 0, revalidateOnFocus: false
   } : { revalidateOnFocus: true }
@@ -48,10 +59,20 @@ function TestProvider({ user, children }) {
       user,
       testSlug,
       tab, setTab,
+      prevTab, setPrevTab,
       lastTab, setLastTab,
-      currentTask, setCurrentTask,
-      biggestTabNum, setBiggestTabNum,
+      // currentTask, setCurrentTask,
+      // biggestTabNum, setBiggestTabNum,
+      visitStack, setVisitStack,
       task1, setTask1,
+      task2, setTask2,
+      task3, setTask3,
+      task4, setTask4,
+      task5, setTask5,
+      task6, setTask6,
+      task7, setTask7,
+      task8, setTask8,
+      task9, setTask9,
     }}>
       {children}
     </TestContext.Provider>
@@ -59,27 +80,21 @@ function TestProvider({ user, children }) {
 }
 
 function Header() {
-  const { user, tab, setTab, lastTab, setLastTab, biggestTabNum, setBiggestTabNum } = useContext(TestContext)
+  const { user, tab, setTab, lastTab, setPrevTab } = useContext(TestContext)
 
   function handleClick(e) {
     e.preventDefault()
     const n = parseInt(e.target.value)
 
-    if (n > biggestTabNum) return false
+    // Skipping prohibitet
+    if (n > lastTab) return false
+
+    // Provide prev state
+    setPrevTab(tab)
+
 
     setTab(n)
-
-    // const s = e.target
-    // if (s.value > lastTab) return false
-
-    // if (s.className.indexOf('CURRENT') == 0) return
-
-    // else {
-    //   document.querySelector('.CURRENT').className = navPast
-    //   s.className = navCurrent
-    //   setTab(s.value)
-    //   window.scrollTo(0, 0)
-    // }
+    window.scrollTo(0, 0)
   }
 
   const navWaiting = "WAITING w-full h-12 text-gray-400 whitespace-no-wrap uppercase hover:bg-gray-100 cursor-default"
@@ -90,7 +105,7 @@ function Header() {
   function whichClass(n) {
     //
     if (n == tab) return navCurrent
-    else if (n > biggestTabNum) return navWaiting
+    else if (n > lastTab) return navWaiting
 
     return navPast
   }
@@ -176,52 +191,13 @@ function Entry({ title, placeholder, fn, task, item, disabled = false, height = 
   const labelDisabled = "block w-full rounded-t bg-gray-100 text-sm text-gray-600 font-semibold px-4 py-2 border border-gray-400"
   const textareaHeight = height == 1 ? "textarea-h1" : "textarea-h4"
   const textActive = `${textareaHeight} w-full bg-gray-100 text-sm appearance-none rounded-b border-b border-l border-r border-blue-300 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
-  const textDisabled = `${textareaHeight} w-full bg-gray-100 text-sm appearance-none rounded-b border-b border-l border-r border-gray-400 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
+  const textDisabled = `${textareaHeight} w-full bg-gray-100 text-blue-800 text-sm appearance-none rounded-b border-b border-l border-r border-gray-400 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
 
   function handleChange(e) {
     fn({...task, [item]: e.target.value })
   }
 
   const myval = task[item]
-  // const saved = myval.length > 0
-
-  return (
-    <div className="my-6">
-      <label className={disabled ? labelDisabled : labelActive}>
-        {disabled && (
-          <svg className="h-4 mt-1 -mr-1 float-right bg-transparent fill-current w-auto mt-1s" tmp="486.733 486.733" viewBox="0 0 486.733 486.733" xmlns="http://www.w3.org/2000/svg">
-            <path d="M403.88,196.563h-9.484v-44.388c0-82.099-65.151-150.681-146.582-152.145c-2.225-0.04-6.671-0.04-8.895,0
-C157.486,1.494,92.336,70.076,92.336,152.175v44.388h-9.485c-14.616,0-26.538,15.082-26.538,33.709v222.632
-c0,18.606,11.922,33.829,26.539,33.829h321.028c14.616,0,26.539-15.223,26.539-33.829V230.272
-C430.419,211.646,418.497,196.563,403.88,196.563z M273.442,341.362v67.271c0,7.703-6.449,14.222-14.158,14.222H227.45
-c-7.71,0-14.159-6.519-14.159-14.222v-67.271c-7.477-7.36-11.83-17.537-11.83-28.795c0-21.334,16.491-39.666,37.459-40.513
-c2.222-0.09,6.673-0.09,8.895,0c20.968,0.847,37.459,19.179,37.459,40.513C285.272,323.825,280.919,334.002,273.442,341.362z
-M331.886,196.563h-84.072h-8.895h-84.072v-44.388c0-48.905,39.744-89.342,88.519-89.342c48.775,0,88.521,40.437,88.521,89.342
-V196.563z"/>
-          </svg>
-        )}
-        <span>{eTitle}</span>
-      </label>
-      {disabled && <textarea value={myval} disabled placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textDisabled}></textarea>}
-      {!disabled && <textarea value={myval} onChange={e => handleChange(e)} placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textActive}></textarea>}
-    </div>
-  )
-}
-
-function Entry2({ title, placeholder, fn, node, target, disabled = false, height = 4 }) {
-  const eTitle = title ? title : 'Aku perlu judul, bang...'
-
-  const labelActive = "block w-full rounded-t bg-blue-100 text-sm text-blue-600 font-semibold px-4 py-2 border border-blue-300"
-  const labelDisabled = "block w-full rounded-t bg-gray-100 text-sm text-gray-600 font-semibold px-4 py-2 border border-gray-400"
-  const textareaHeight = height == 1 ? "textarea-h1" : "textarea-h4"
-  const textActive = `${textareaHeight} w-full bg-gray-100 text-sm appearance-none rounded-b border-b border-l border-r border-blue-300 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
-  const textDisabled = `${textareaHeight} w-full bg-gray-100 text-sm appearance-none rounded-b border-b border-l border-r border-gray-400 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
-
-  function handleChange(e) {
-    fn({...node, [target]: e.target.value })
-  }
-
-  const myval = node[target]
   // const saved = myval.length > 0
 
   return (
@@ -257,7 +233,7 @@ function Debug({ states, show }) {
 
   // [label, text]
   return (
-    <div className="text-xs text-red-500">
+    <div className="text-xs text-red-500 mt-8">
       <p className="pb-1 border-b mb-1">DEBUG</p>
       {states.map(s => (
         <p key={s[0]} className="pb-1 border-b mb-1">
@@ -269,11 +245,12 @@ function Debug({ states, show }) {
   )
 }
 
-function TabDataSubmitter({ taskName, subTasks, fn }) {
+function TabSubmitter({ task, mutate, currentTabNum }) {
+  const { setTab, prevTab, setPrevTab, lastTab, setLastTab } = useContext(TestContext)
   const [submittable, setSubmittable] = useState(false)
 
-  const checkNormal = "block text-gray-600 text-sm text-center font-semibolds hover:text-blue-500 cursor-pointer"
-  const checkChecked = "block text-blue-600 text-sm text-center font-semibolds cursor-pointer"
+  const checkNormal = "block mx-auto text-gray-600 text-sm text-center font-semibolds hover:text-blue-500 cursor-pointer"
+  const checkChecked = "block mx-auto text-blue-600 text-sm text-center font-semibolds cursor-pointer"
   const btnActive = "rounded border-2 border-green-400 text-lg text-green-500 px-6 py-3 hover:border-green-500 hover:bg-green-500 hover:text-white active:bg-green-700"
   const btnDisabled = "rounded border-2 text-lg text-gray-400 px-6 py-3"
 
@@ -289,25 +266,32 @@ function TabDataSubmitter({ taskName, subTasks, fn }) {
 
   async function handleSubmit(e) {
     e.preventDefault()
+
     console.log("handleSubmit()")
+    console.log(task)
 
-    const body = {
-      taskName: taskName,
-      subTasks: subTasks,
-    }
+    // Mark task as saved
+    mutate({...task, ["saved"]: true})
 
-    console.info(body)
-    fn()
+    setPrevTab(currentTabNum) // memorize
+
+    if (lastTab < currentTabNum) setLastTab(currentTabNum)
+
+    if (currentTabNum < MAX_TAB_NUM) setTab(currentTabNum + 1)
+
+    window.scrollTo(0, 0)
   }
 
   return (
     <div>
       <form id="form" onSubmit={handleSubmit} className="max-w-2xl mx-auto">
         <p className={(submittable ? 'text-gray-500' : 'text-pink-500') + ' text-sm text-center font-light mt-8 mb-3'}>Pastikan Anda sudah menuliskan cukup jawaban untuk seluruh tugas di bagian ini.</p>
-        <label id="confirmLabel" htmlFor="confirm" className={checkNormal}>
-          <input onChange={e => handleChange(e)} type="checkbox" id="confirm" className="text-3xl mr-4"/>
-          Saya sudah menuliskan cukup jawaban.
-        </label>
+        <div className="flex justify-items-center">
+          <label id="confirmLabel" htmlFor="confirm" className={checkNormal}>
+            <input onChange={e => handleChange(e)} type="checkbox" id="confirm" className="text-3xl mr-4"/>
+            Saya sudah menuliskan cukup jawaban.
+          </label>
+        </div>
         <p className="text-center mt-8">
           {submittable && <button id="submit" type="submit" className={btnActive}>Simpan dan lanjutkan</button>}
           {!submittable && <button id="submit" type="submit" disabled className={btnDisabled}>Simpan dan lanjutkan</button>}
@@ -317,59 +301,25 @@ function TabDataSubmitter({ taskName, subTasks, fn }) {
   )
 }
 
-function TabSubmitter({ task }) {
-  const [submittable, setSubmittable] = useState(false)
+function setCurrentTab(n) {
+  const { setTab, lastTab, setLastTab } = useContext(TestContext)
+  setTab(n)
 
-  const checkNormal = "block text-gray-600 text-sm text-center font-semibolds hover:text-blue-500 cursor-pointer"
-  const checkChecked = "block text-blue-600 text-sm text-center font-semibolds cursor-pointer"
-  const btnActive = "rounded border-2 border-green-400 text-lg text-green-500 px-6 py-3 hover:border-green-500 hover:bg-green-500 hover:text-white active:bg-green-700"
-  const btnDisabled = "rounded border-2 text-lg text-gray-400 px-6 py-3"
-
-  function handleChange(e) {
-    if (e.target.checked) {
-      document.getElementById("confirmLabel").className = checkChecked
-      setSubmittable(true)
-    } else {
-      document.getElementById("confirmLabel").className = checkNormal
-      setSubmittable(false)
-    }
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    console.log("handleSubmit()")
-    console.log(task)
-  }
-
-  return (
-    <div>
-      <form id="form" onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-        <p className={(submittable ? 'text-gray-500' : 'text-pink-500') + ' text-sm text-center font-light mt-8 mb-3'}>Pastikan Anda sudah menuliskan cukup jawaban untuk seluruh tugas di bagian ini.</p>
-        <label id="confirmLabel" htmlFor="confirm" className={checkNormal}>
-          <input onChange={e => handleChange(e)} type="checkbox" id="confirm" className="text-3xl mr-4"/>
-          Saya sudah menuliskan cukup jawaban.
-        </label>
-        <p className="text-center mt-8">
-          {submittable && <button id="submit" type="submit" className={btnActive}>Simpan dan lanjutkan</button>}
-          {!submittable && <button id="submit" type="submit" disabled className={btnDisabled}>Simpan dan lanjutkan</button>}
-        </p>
-      </form>
-    </div>
-  )
+  if (lastTab < n) setLastTab(n)
+  return n;
 }
 
 function TAB1({ debug }) {
-  const tabNum = 1
-  const { tab, setTab, lastTab, setLastTab, biggestTabNum, setBiggestTabNum } = useContext(TestContext)
+  const tabNum = setCurrentTab(1)
+  // const tabNum = 1
   const { task1, setTask1 } = useContext(TestContext)
-  const [saved, setSaved] = useState(false)
-  const [submittable, setSubmittable] = useState(false)
-
+  const saved = task1.saved ? true : false
   const _debug = [
     ["T1", task1.t1],
     ["T2", task1.t2],
     ["T3", task1.t3],
   ]
+
   return (
     <div className="relative">
       <h1 className="text-center text-teal-500 text-2xl font-bold uppercase py-8">Bab 1</h1>
@@ -410,37 +360,22 @@ function TAB1({ debug }) {
         <Debug states={_debug} show={debug} />
       </div>
 
-      <TabSubmitter task={task1} />
+      {!saved && <TabSubmitter task={task1} mutate={setTask1} currentTabNum={tabNum} />}
     </div>
   )
 }
 
 function TAB2({ debug }) {
-  const { intrayBody } = useContext(TestContext)
-  const items = [
-    intrayBody.task2.t1,
-    intrayBody.task2.t2,
-    intrayBody.task2.t3,
-    intrayBody.task2.t4,
-    intrayBody.task2.t5,
-  ]
-
-  const [saved, setSaved] = useState(false)
-  const [t1, setT1] = useState('')
-  const [t2, setT2] = useState('')
-  const [t3, setT3] = useState('')
-  const [t4, setT4] = useState('')
-  const [t5, setT5] = useState('')
-
+  const tabNum = setCurrentTab(2)
+  const { task2, setTask2 } = useContext(TestContext)
+  const saved = task2.saved ? true : false
   const _debug = [
-    ["T1", t1],
-    ["T2", t2],
-    ["T3", t3],
-    ["T4", t4],
-    ["T5", t5],
+    ["T1", task2.t1],
+    ["T2", task2.t2],
+    ["T3", task2.t3],
+    ["T4", task2.t4],
+    ["T5", task2.t5],
   ]
-
-  // function syncIntray(n)
 
   return (
     <div className="relative">
@@ -475,32 +410,29 @@ function TAB2({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Tindakan/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setT1} disabled={saved} />
-          <Entry title="Tindakan/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setT2} disabled={saved} />
-          <Entry title="Tindakan/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setT3} disabled={saved} />
-          <Entry title="Tindakan/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setT4} disabled={saved} />
-          <Entry title="Tindakan/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setT5} disabled={saved} />
+          <Entry title="Tindakan/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t1" disabled={saved} />
+          <Entry title="Tindakan/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t2" disabled={saved} />
+          <Entry title="Tindakan/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t3" disabled={saved} />
+          <Entry title="Tindakan/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t4" disabled={saved} />
+          <Entry title="Tindakan/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t5" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
+        {!saved && <TabSubmitter task={task2} mutate={setTask2} currentTabNum={tabNum} />}
       </div>
     </div>
   )
 }
 
 function TAB3({ debug }) {
-  const [saved, setSaved] = useState(false)
-  const [t1, setT1] = useState('')
-  const [t2, setT2] = useState('')
-  const [t3, setT3] = useState('')
-  const [t4, setT4] = useState('')
-  const [t5, setT5] = useState('')
-
+  const tabNum = setCurrentTab(3)
+  const { task3, setTask3 } = useContext(TestContext)
+  const saved = task3.saved ? true : false
   const _debug = [
-    ["T1", t1],
-    ["T2", t2],
-    ["T3", t3],
-    ["T4", t4],
-    ["T5", t5],
+    ["T1", task3.t1],
+    ["T2", task3.t2],
+    ["T3", task3.t3],
+    ["T4", task3.t4],
+    ["T5", task3.t5],
   ]
 
   return (
@@ -536,40 +468,32 @@ function TAB3({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Tindakan/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setT1} disabled={saved} />
-          <Entry title="Tindakan/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setT2} disabled={saved} />
-          <Entry title="Tindakan/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setT3} disabled={saved} />
-          <Entry title="Tindakan/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setT4} disabled={saved} />
-          <Entry title="Tindakan/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setT5} disabled={saved} />
+          <Entry title="Tindakan/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t1" disabled={saved} />
+          <Entry title="Tindakan/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t2" disabled={saved} />
+          <Entry title="Tindakan/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t3" disabled={saved} />
+          <Entry title="Tindakan/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t4" disabled={saved} />
+          <Entry title="Tindakan/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t5" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
+        {!saved && <TabSubmitter task={task3} mutate={setTask3} currentTabNum={tabNum} />}
       </div>
     </div>
   )
 }
 
 function TAB4({ debug }) {
-  const [saved, setSaved] = useState(false)
-
-  const [t1, setT1] = useState('')
-  const [t2, setT2] = useState('')
-  const [t3, setT3] = useState('')
-  const [t4, setT4] = useState('')
-
-  const [p1, setP1] = useState('')
-  const [p2, setP2] = useState('')
-  const [p3, setP3] = useState('')
-  const [p4, setP4] = useState('')
-
+  const tabNum = setCurrentTab(4)
+  const { task4, setTask4 } = useContext(TestContext)
+  const saved = task4.saved ? true : false
   const _debug = [
-    ["T1", t1],
-    ["P1", p1],
-    ["T2", t2],
-    ["P2", p2],
-    ["T3", t3],
-    ["P3", p3],
-    ["T4", t4],
-    ["P4", p4],
+    ["T1", task4.t1],
+    ["T2", task4.t2],
+    ["T3", task4.t3],
+    ["T4", task4.t4],
+    ["P1", task4.p1],
+    ["P2", task4.p2],
+    ["P3", task4.p3],
+    ["P4", task4.p4],
   ]
 
   return (
@@ -605,38 +529,35 @@ function TAB4({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry height={1} title="Topik penugasan 1" placeholder={"Ketik jawaban Anda di sini"} fn={setT1} disabled={saved} />
-          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setP1} disabled={saved} />
+          <Entry height={1} title="Topik penugasan 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="t1" disabled={saved} />
+          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="p1" disabled={saved} />
           <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Topik penugasan 2" placeholder={"Ketik jawaban Anda di sini"} fn={setT2} disabled={saved} />
-          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setP2} disabled={saved} />
+          <Entry height={1} title="Topik penugasan 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="t2" disabled={saved} />
+          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="p2" disabled={saved} />
           <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Topik penugasan 3" placeholder={"Ketik jawaban Anda di sini"} fn={setT3} disabled={saved} />
-          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setP3} disabled={saved} />
+          <Entry height={1} title="Topik penugasan 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="t3" disabled={saved} />
+          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="p3" disabled={saved} />
           <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Topik penugasan 4" placeholder={"Ketik jawaban Anda di sini"} fn={setT4} disabled={saved} />
-          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setP4} disabled={saved} />
+          <Entry height={1} title="Topik penugasan 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="t4" disabled={saved} />
+          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="p4" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
+        {!saved && <TabSubmitter task={task4} mutate={setTask4} currentTabNum={tabNum} />}
       </div>
     </div>
   )
 }
 
 function TAB5({ debug }) {
-  const [saved, setSaved] = useState(false)
-  const [i1, setI1] = useState('')
-  const [i2, setI2] = useState('')
-  const [i3, setI3] = useState('')
-  const [i4, setI4] = useState('')
-  const [i5, setI5] = useState('')
-
+  const tabNum = setCurrentTab(5)
+  const { task5, setTask5 } = useContext(TestContext)
+  const saved = task5.saved ? true : false
   const _debug = [
-    ["I1", i1],
-    ["I2", i2],
-    ["I3", i3],
-    ["I4", i4],
-    ["I5", i5],
+    ["I1", task5.i1],
+    ["I2", task5.i2],
+    ["I3", task5.i3],
+    ["I4", task5.i4],
+    ["I5", task5.i5],
   ]
 
   return (
@@ -672,32 +593,29 @@ function TAB5({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Topik/informasi 1" placeholder={"Ketik jawaban Anda di sini"} fn={setI1} disabled={saved} />
-          <Entry title="Topik/informasi 2" placeholder={"Ketik jawaban Anda di sini"} fn={setI2} disabled={saved} />
-          <Entry title="Topik/informasi 3" placeholder={"Ketik jawaban Anda di sini"} fn={setI3} disabled={saved} />
-          <Entry title="Topik/informasi 4" placeholder={"Ketik jawaban Anda di sini"} fn={setI4} disabled={saved} />
-          <Entry title="Topik/informasi 5" placeholder={"Ketik jawaban Anda di sini"} fn={setI5} disabled={saved} />
+          <Entry title="Topik/informasi 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i1" disabled={saved} />
+          <Entry title="Topik/informasi 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i2" disabled={saved} />
+          <Entry title="Topik/informasi 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i3" disabled={saved} />
+          <Entry title="Topik/informasi 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i4" disabled={saved} />
+          <Entry title="Topik/informasi 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i5" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
+        {!saved && <TabSubmitter task={task5} mutate={setTask5} currentTabNum={tabNum} />}
       </div>
     </div>
   )
 }
 
 function TAB6({ debug }) {
-  const [saved, setSaved] = useState(false)
-  const [u1, setU1] = useState('')
-  const [u2, setU2] = useState('')
-  const [u3, setU3] = useState('')
-  const [u4, setU4] = useState('')
-  const [u5, setU5] = useState('')
-
+  const tabNum = setCurrentTab(6)
+  const { task6, setTask6 } = useContext(TestContext)
+  const saved = task6.saved ? true : false
   const _debug = [
-    ["U1", u1],
-    ["U2", u2],
-    ["U3", u3],
-    ["U4", u4],
-    ["U5", u5],
+    ["U1", task6.u1],
+    ["U2", task6.u2],
+    ["U3", task6.u3],
+    ["U4", task6.u4],
+    ["U5", task6.u5],
   ]
 
   return (
@@ -733,38 +651,32 @@ function TAB6({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Upaya/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setU1} disabled={saved} />
-          <Entry title="Upaya/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setU2} disabled={saved} />
-          <Entry title="Upaya/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setU3} disabled={saved} />
-          <Entry title="Upaya/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setU4} disabled={saved} />
-          <Entry title="Upaya/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setU5} disabled={saved} />
+          <Entry title="Upaya/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i1" disabled={saved} />
+          <Entry title="Upaya/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i2" disabled={saved} />
+          <Entry title="Upaya/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i3" disabled={saved} />
+          <Entry title="Upaya/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i4" disabled={saved} />
+          <Entry title="Upaya/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i5" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
+        {!saved && <TabSubmitter task={task6} mutate={setTask6} currentTabNum={tabNum} />}
       </div>
     </div>
   )
 }
 
 function TAB7({ debug }) {
-  const [saved, setSaved] = useState(false)
-  const [u1, setU1] = useState('')
-  const [u2, setU2] = useState('')
-  const [u3, setU3] = useState('')
-  const [u4, setU4] = useState('')
-  const [a1, setA1] = useState('')
-  const [a2, setA2] = useState('')
-  const [a3, setA3] = useState('')
-  const [a4, setA4] = useState('')
-
+  const tabNum = setCurrentTab(7)
+  const { task7, setTask7 } = useContext(TestContext)
+  const saved = task7.saved ? true : false
   const _debug = [
-    ["U1", u1],
-    ["A1", a1],
-    ["U2", u2],
-    ["A2", a2],
-    ["U3", u3],
-    ["A3", a3],
-    ["U4", u4],
-    ["A4", a4],
+    ["U1", task7.u1],
+    ["A1", task7.a1],
+    ["U2", task7.u2],
+    ["A2", task7.a2],
+    ["U3", task7.u3],
+    ["A3", task7.a3],
+    ["U4", task7.u4],
+    ["A4", task7.a4],
   ]
 
   return (
@@ -800,38 +712,35 @@ function TAB7({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry height={1} title="Usulan/rancangan 1" placeholder={"Ketik jawaban Anda di sini"} fn={setU1} disabled={saved} />
-          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setA1} disabled={saved} />
+          <Entry height={1} title="Usulan/rancangan 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="u1" disabled={saved} />
+          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="a1" disabled={saved} />
           <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Usulan/rancangan 2" placeholder={"Ketik jawaban Anda di sini"} fn={setU2} disabled={saved} />
-          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setA2} disabled={saved} />
+          <Entry height={1} title="Usulan/rancangan 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="u2" disabled={saved} />
+          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="a2" disabled={saved} />
           <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Usulan/rancangan 3" placeholder={"Ketik jawaban Anda di sini"} fn={setU3} disabled={saved} />
-          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setA3} disabled={saved} />
+          <Entry height={1} title="Usulan/rancangan 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="u3" disabled={saved} />
+          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="a3" disabled={saved} />
           <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Usulan/rancangan 4" placeholder={"Ketik jawaban Anda di sini"} fn={setU4} disabled={saved} />
-          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setA4} disabled={saved} />
+          <Entry height={1} title="Usulan/rancangan 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="u4" disabled={saved} />
+          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="a4" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
+        {!saved && <TabSubmitter task={task7} mutate={setTask7} currentTabNum={tabNum} />}
       </div>
     </div>
   )
 }
 
 function TAB8({ debug }) {
-  const [saved, setSaved] = useState(false)
-  const [w1, setW1] = useState('')
-  const [e1, setE1] = useState('')
-  const [e2, setE2] = useState('')
-  const [t1, setT1] = useState('')
-  const [t2, setT2] = useState('')
-
+  const tabNum = setCurrentTab(8)
+  const { task8, setTask8 } = useContext(TestContext)
+  const saved = task8.saved ? true : false
   const _debug = [
-    ["W1", w1],
-    ["E1", e1],
-    ["E2", e2],
-    ["T2", t1],
-    ["T3", t2],
+    ["W1", task8.w1],
+    ["E1", task8.e1],
+    ["E2", task8.e2],
+    ["T2", task8.t1],
+    ["T3", task8.t2],
   ]
 
   return (
@@ -867,32 +776,29 @@ function TAB8({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Tindakan yang wajib dilakukan" placeholder={"Ketik jawaban Anda di sini"} fn={setW1} disabled={saved} />
-          <Entry title="Tindakan paling efektif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setE1} disabled={saved} />
-          <Entry title="Tindakan paling efektif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setE2} disabled={saved} />
-          <Entry title="Tindakan paling tidak efektif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setT1} disabled={saved} />
-          <Entry title="Tindakan paling tidak efektif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setT2} disabled={saved} />
+          <Entry title="Tindakan yang wajib dilakukan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="w1" disabled={saved} />
+          <Entry title="Tindakan paling efektif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="e1" disabled={saved} />
+          <Entry title="Tindakan paling efektif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="e2" disabled={saved} />
+          <Entry title="Tindakan paling tidak efektif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="t1" disabled={saved} />
+          <Entry title="Tindakan paling tidak efektif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="t2" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
+        {!saved && <TabSubmitter task={task8} mutate={setTask8} currentTabNum={tabNum} />}
       </div>
     </div>
   )
 }
 
 function TAB9({ debug }) {
-  const [saved, setSaved] = useState(false)
-  const [u1, setU1] = useState('')
-  const [u2, setU2] = useState('')
-  const [u3, setU3] = useState('')
-  const [u4, setU4] = useState('')
-  const [u5, setU5] = useState('')
-
+  const tabNum = setCurrentTab(9)
+  const { task9, setTask9 } = useContext(TestContext)
+  const saved = task9.saved ? true : false
   const _debug = [
-    ["U1", u1],
-    ["U2", u2],
-    ["U3", u3],
-    ["U4", u4],
-    ["U5", u5],
+    ["U1", task9.u1],
+    ["U2", task9.u2],
+    ["U3", task9.u3],
+    ["U4", task9.u4],
+    ["U5", task9.u5],
   ]
 
   return (
@@ -928,21 +834,45 @@ function TAB9({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Upaya/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setU1} disabled={saved} />
-          <Entry title="Upaya/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setU2} disabled={saved} />
-          <Entry title="Upaya/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setU3} disabled={saved} />
-          <Entry title="Upaya/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setU4} disabled={saved} />
-          <Entry title="Upaya/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setU5} disabled={saved} />
+          <Entry title="Upaya/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u1" disabled={saved} />
+          <Entry title="Upaya/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u2" disabled={saved} />
+          <Entry title="Upaya/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u3" disabled={saved} />
+          <Entry title="Upaya/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u4" disabled={saved} />
+          <Entry title="Upaya/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u5" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
+        {!saved && <TabSubmitter task={task9} mutate={setTask9} currentTabNum={tabNum} />}
       </div>
     </div>
   )
 }
 
 export function Content() {
-  const { tab, biggestTabNum, task1 } = useContext(TestContext)
-  const [submittable, setSubmittable] = useState(false)
+  const { tab, lastTab, prevTab } = useContext(TestContext)
+  // const [submittable, setSubmittable] = useState(false)
+
+  // switch (tab) {
+  //   case 1:
+  //     return <TAB1 debug={true} />
+  //   case 2:
+  //     return <TAB2 debug={true} />
+  //   case 3:
+  //     return <TAB3 debug={true} />
+  //   case 4:
+  //     return <TAB4 debug={true} />
+  //   case 5:
+  //     return <TAB5 debug={true} />
+  //   case 6:
+  //     return <TAB6 debug={true} />
+  //   case 7:
+  //     return <TAB7 debug={true} />
+  //   case 8:
+  //     return <TAB8 debug={true} />
+  //   case 9:
+  //     return <TAB9 debug={true} />
+  //   default:
+  //     return <div>HOLO</div>
+  // }
 
   return (
     <div>
@@ -957,22 +887,13 @@ export function Content() {
       {tab == 8 && <TAB8 debug={true} />}
       {tab == 9 && <TAB9 debug={true} />}
 
-      {/* <form id="form" onSubmit="" className="max-w-2xl mx-auto">
-        <p className={(submittable ? 'text-gray-500' : 'text-pink-500') + ' text-sm text-center font-light mt-8 mb-3'}>Pastikan Anda sudah menuliskan cukup jawaban untuk seluruh tugas di bagian ini.</p>
-        <label id="confirmLabel" htmlFor="confirm" className={checkNormal}>
-          <input onChange={e => handleChange(e)} type="checkbox" id="confirm" className="text-3xl mr-4"/>
-          Saya sudah menuliskan cukup jawaban.
-        </label>
-        <p className="text-center mt-8">
-          {submittable && <button id="submit" type="submit" onClick={event => handleSubmit(event)} className={btnActive}>Simpan dan lanjutkan</button>}
-          {!submittable && <button id="submit" type="submit" disabled className={btnDisabled}>Simpan dan lanjutkan</button>}
-        </p>
-      </form> */}
-      <p className="text-sm my-6">
-        TAB: <span className="text-red-500">{tab}</span>
-        &nbsp;&nbsp;-&nbsp;&nbsp;BIGGEST: <span className="text-red-500">{biggestTabNum}</span>
+      <p className="text-sm text-gray-700 text-center mt-12">
+        CURRENT TAB: <span className="text-red-500">{tab}</span>
+        &nbsp;&nbsp;-&nbsp;&nbsp;PREV TAB: <span className="text-red-500">{prevTab}</span>
+        &nbsp;&nbsp;-&nbsp;&nbsp;MAX VISITED: <span className="text-red-500">{lastTab}</span>
       </p>
-      <pre className="pre">{JSON.stringify(task1, null, 2)}</pre>
+      {/* <p className="text-sm text-gray-700 text-center mt-2">Visits: {visitStack.join(' ')}</p> */}
+      {/* <pre className="pre">{JSON.stringify(task1, null, 2)}</pre> */}
       {/* <pre className="pre">{JSON.stringify(intrayBody, null, 2)}</pre> */}
     </div>
   )
