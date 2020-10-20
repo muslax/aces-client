@@ -15,3 +15,42 @@
 /* Stop purging. */
 
 /* Your own custom utilities */
+
+.w-22 {
+  width: 5.8125rem
+}
+.h-24-rem {
+  height: 24rem;
+}
+
+#intray-page.scrolled {
+  padding-top: 45px;
+
+}
+#intray-page.scrolled #intray-tabs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* border-bottom: 1px solid salmon; */
+}
+#intray-page.scrolled #container-inner {
+  padding: 0 1rem;
+}
+#intray-page.scrolled .not-scrolled {display: none;}
+#intray-page.scrolled .scrolled {display: block;}
+li button.CURRENT {
+  padding-top: 1px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+}
+
+.textarea-h1 {
+  resize: vertical;
+  min-height: 1rem
+}
+
+.textarea-h4 {
+  resize: vertical;
+  min-height: 6.25rem
+}

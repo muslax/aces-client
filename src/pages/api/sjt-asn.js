@@ -79,6 +79,7 @@ export default withSession(async (req, res) => {
   else if (req.method == "POST") {
     const body = JSON.parse(req.body)
     const { seq, mostElm, mostText, leastElm, leastText, lastTouched } = body
+    console.log("seq, mostElm, mostText, leastElm, leastText, lastTouched", seq, mostElm, mostText, leastElm, leastText, lastTouched)
     const date = new Date()
     const ts = date.getTime()
     const elapsed = ts - lastTouched

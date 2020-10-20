@@ -16,6 +16,8 @@ const Layout = ({ title, children }) => (
         box-sizing: border-box;
       }
 
+      .min-w-tab { min-width: 50px; }
+
       body {
         margin: 0;
         color: #333;
