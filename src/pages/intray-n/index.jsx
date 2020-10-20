@@ -317,7 +317,7 @@ function TabDataSubmitter({ taskName, subTasks, fn }) {
   )
 }
 
-function TabDataSubmitter2({ items, fn }) {
+function TabSubmitter({ task }) {
   const [submittable, setSubmittable] = useState(false)
 
   const checkNormal = "block text-gray-600 text-sm text-center font-semibolds hover:text-blue-500 cursor-pointer"
@@ -338,14 +338,7 @@ function TabDataSubmitter2({ items, fn }) {
   async function handleSubmit(e) {
     e.preventDefault()
     console.log("handleSubmit()")
-
-    const body = {
-      taskName: taskName,
-      subTasks: subTasks,
-    }
-
-    console.info(body)
-    fn()
+    console.log(task)
   }
 
   return (
@@ -377,52 +370,6 @@ function TAB1({ debug }) {
     ["T2", task1.t2],
     ["T3", task1.t3],
   ]
-
-  function handleChange(e) {
-    if (e.target.checked) {
-      document.getElementById("confirmLabel").className = checkChecked
-      setSubmittable(true)
-    } else {
-      document.getElementById("confirmLabel").className = checkNormal
-      setSubmittable(false)
-    }
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    console.log("handleSubmit()")
-
-    setSaved(true)
-    setTab(tab + 1)
-    setLastTab(tabNum)
-    setBiggestTabNum(tab + 1)
-  }
-
-  // What to do after tab data submitted
-  function mutateTab() {
-    console.log("mutateTab()")
-    // Save tab state
-    setSaved(true)
-    // Advance
-    // if (lastTab == tab) {
-      setTab(tab + 1)
-      setLastTab(tabNum)
-      setBiggestTabNum(tab + 1)
-    // }
-    intrayBody.task1.t1 = t1
-    intrayBody.task1.t2 = t2
-    intrayBody.task1.t3 = t3
-
-    console.log(intrayBody.task1.t1)
-    console.log(intrayBody.task1.t2)
-    console.log(intrayBody.task1.t3)
-  }
-
-  const checkNormal = "block text-gray-600 text-sm text-center font-semibolds hover:text-blue-500 cursor-pointer"
-  const checkChecked = "block text-blue-600 text-sm text-center font-semibolds cursor-pointer"
-  const btnActive = "rounded border-2 border-green-400 text-lg text-green-500 px-6 py-3 hover:border-green-500 hover:bg-green-500 hover:text-white active:bg-green-700"
-  const btnDisabled = "rounded border-2 text-lg text-gray-400 px-6 py-3"
-
   return (
     <div className="relative">
       <h1 className="text-center text-teal-500 text-2xl font-bold uppercase py-8">Bab 1</h1>
@@ -463,20 +410,7 @@ function TAB1({ debug }) {
         <Debug states={_debug} show={debug} />
       </div>
 
-      {/* <TabDataSubmitter taskName={taskName} subTasks={subTasks} fn={mutateTab} /> */}
-      <div>
-      <form id="form" onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-        <p className={(submittable ? 'text-gray-500' : 'text-pink-500') + ' text-sm text-center font-light mt-8 mb-3'}>Pastikan Anda sudah menuliskan cukup jawaban untuk seluruh tugas di bagian ini.</p>
-        <label id="confirmLabel" htmlFor="confirm" className={checkNormal}>
-          <input onChange={e => handleChange(e)} type="checkbox" id="confirm" className="text-3xl mr-4"/>
-          Saya sudah menuliskan cukup jawaban.
-        </label>
-        <p className="text-center mt-8">
-          {submittable && <button id="submit" type="submit" className={btnActive}>Simpan dan lanjutkan</button>}
-          {!submittable && <button id="submit" type="submit" disabled className={btnDisabled}>Simpan dan lanjutkan</button>}
-        </p>
-      </form>
-    </div>
+      <TabSubmitter task={task1} />
     </div>
   )
 }
@@ -1007,7 +941,7 @@ function TAB9({ debug }) {
 }
 
 export function Content() {
-  const { tab, biggestTabNum, intrayBody, currentTask, task1 } = useContext(TestContext)
+  const { tab, biggestTabNum, task1 } = useContext(TestContext)
   const [submittable, setSubmittable] = useState(false)
 
   return (
@@ -1039,7 +973,7 @@ export function Content() {
         &nbsp;&nbsp;-&nbsp;&nbsp;BIGGEST: <span className="text-red-500">{biggestTabNum}</span>
       </p>
       <pre className="pre">{JSON.stringify(task1, null, 2)}</pre>
-      <pre className="pre">{JSON.stringify(intrayBody, null, 2)}</pre>
+      {/* <pre className="pre">{JSON.stringify(intrayBody, null, 2)}</pre> */}
     </div>
   )
 }
