@@ -38,9 +38,9 @@ function TestProvider({ user, children }) {
   const [tab, setTab] = useState(1)
   const [prevTab, setPrevTab] = useState(0)
   const [lastTab, setLastTab] = useState(0)
-  const [visitStack, setVisitStack] = useState([])
+  // const [visitStack, setVisitStack] = useState([])
 
-  const [task1, setTask1] = useState({ t1: "", t2: "", t3: "" })
+  const [task1, setTask1] = useState({ t1: "", t2: "", t3: "", saved: false })
   const [task2, setTask2] = useState({ t1: "", t2: "", t3: "", t4: "", t5: "" })
   const [task3, setTask3] = useState({ t1: "", t2: "", t3: "", t4: "", t5: "" })
   const [task4, setTask4] = useState({ t1: "", t2: "", t3: "", t4: "", p1: "", p2: "", p3: "", p4: "" })
@@ -49,6 +49,9 @@ function TestProvider({ user, children }) {
   const [task7, setTask7] = useState({ u1: "", u2: "", u3: "", u4: "", a1: "", a2: "", a3: "", a4: "" })
   const [task8, setTask8] = useState({ w1: "", e1: "", e2: "", t1: "", t2: "" })
   const [task9, setTask9] = useState({ u1: "", u2: "", u3: "", u4: "", u5: "" })
+
+  const [currentTask, setCurrentTask] = useState(task1)
+  const [mutator, setMutator] = useState(null)
 
   const swrOptions = process.env.NODE_ENV == 'development' ? {
     refreshInterval: 0, revalidateOnFocus: false
@@ -61,9 +64,10 @@ function TestProvider({ user, children }) {
       tab, setTab,
       prevTab, setPrevTab,
       lastTab, setLastTab,
-      // currentTask, setCurrentTask,
+      currentTask, setCurrentTask,
+      mutator, setMutator,
       // biggestTabNum, setBiggestTabNum,
-      visitStack, setVisitStack,
+      // visitStack, setVisitStack,
       task1, setTask1,
       task2, setTask2,
       task3, setTask3,
@@ -80,7 +84,19 @@ function TestProvider({ user, children }) {
 }
 
 function Header() {
-  const { user, tab, setTab, lastTab, setPrevTab } = useContext(TestContext)
+  const { user, tab, setTab, lastTab, setPrevTab,
+    currentTask, setCurrentTask,
+    mutator, setMutator,
+    task1, setTask1,
+    task2, setTask2,
+    task3, setTask3,
+    task4, setTask4,
+    task5, setTask5,
+    task6, setTask6,
+    task7, setTask7,
+    task8, setTask8,
+    task9, setTask9
+   } = useContext(TestContext)
 
   function handleClick(e) {
     e.preventDefault()
@@ -92,8 +108,49 @@ function Header() {
     // Provide prev state
     setPrevTab(tab)
 
-
+    // Setup task and mutator
+    switch (n) {
+      case 1:
+        setCurrentTask(task1)
+        setMutator(setTask1)
+        break
+      case 2:
+        setCurrentTask(task2)
+        setMutator(setTask2)
+        break
+      case 3:
+        setCurrentTask(task3)
+        setMutator(setTask3)
+        break
+      case 4:
+        setCurrentTask(task4)
+        setMutator(setTask4)
+        break
+      case 5:
+        setCurrentTask(task5)
+        setMutator(setTask5)
+        break
+      case 6:
+        setCurrentTask(task6)
+        setMutator(setTask6)
+        break
+      case 7:
+        setCurrentTask(task7)
+        setMutator(setTask7)
+        break
+      case 8:
+        setCurrentTask(task8)
+        setMutator(setTask8)
+        break
+      case 9:
+        setCurrentTask(task9)
+        setMutator(setTask9)
+        break
+    }
     setTab(n)
+
+
+
     window.scrollTo(0, 0)
   }
 
@@ -271,7 +328,8 @@ function TabSubmitter({ task, mutate, currentTabNum }) {
     console.log(task)
 
     // Mark task as saved
-    mutate({...task, ["saved"]: true})
+    // mutate({...task, ["saved"]: true})
+    mutate({...task, saved: true})
 
     setPrevTab(currentTabNum) // memorize
 
@@ -310,14 +368,14 @@ function setCurrentTab(n) {
 }
 
 function TAB1({ debug }) {
-  const tabNum = setCurrentTab(1)
+  // const tabNum = setCurrentTab(1)
   // const tabNum = 1
   const { task1, setTask1 } = useContext(TestContext)
-  const saved = task1.saved ? true : false
+  const saved = task1?.saved  //? true : false
   const _debug = [
-    ["T1", task1.t1],
-    ["T2", task1.t2],
-    ["T3", task1.t3],
+    ["T1", task1?.t1],
+    ["T2", task1?.t2],
+    ["T3", task1?.t3],
   ]
 
   return (
@@ -359,15 +417,17 @@ function TAB1({ debug }) {
         </div>
         <Debug states={_debug} show={debug} />
       </div>
+      <pre className="pre">{JSON.stringify(task1)}</pre>
 
-      {!saved && <TabSubmitter task={task1} mutate={setTask1} currentTabNum={tabNum} />}
+      {/* {!saved && <TabSubmitter task={task1} mutate={setTask1} currentTabNum={tabNum} />} */}
     </div>
   )
 }
 
 function TAB2({ debug }) {
-  const tabNum = setCurrentTab(2)
-  const { task2, setTask2 } = useContext(TestContext)
+  // const tabNum = setCurrentTab(2)
+  // const tabNum = 2
+  const { tab, task2, setTask2 } = useContext(TestContext)
   const saved = task2.saved ? true : false
   const _debug = [
     ["T1", task2.t1],
@@ -417,7 +477,7 @@ function TAB2({ debug }) {
           <Entry title="Tindakan/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t5" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
-        {!saved && <TabSubmitter task={task2} mutate={setTask2} currentTabNum={tabNum} />}
+        {!saved && <TabSubmitter task={task2} mutate={setTask2} currentTabNum={tab} />}
       </div>
     </div>
   )
@@ -848,31 +908,8 @@ function TAB9({ debug }) {
 }
 
 export function Content() {
-  const { tab, lastTab, prevTab } = useContext(TestContext)
-  // const [submittable, setSubmittable] = useState(false)
-
-  // switch (tab) {
-  //   case 1:
-  //     return <TAB1 debug={true} />
-  //   case 2:
-  //     return <TAB2 debug={true} />
-  //   case 3:
-  //     return <TAB3 debug={true} />
-  //   case 4:
-  //     return <TAB4 debug={true} />
-  //   case 5:
-  //     return <TAB5 debug={true} />
-  //   case 6:
-  //     return <TAB6 debug={true} />
-  //   case 7:
-  //     return <TAB7 debug={true} />
-  //   case 8:
-  //     return <TAB8 debug={true} />
-  //   case 9:
-  //     return <TAB9 debug={true} />
-  //   default:
-  //     return <div>HOLO</div>
-  // }
+  const { tab, lastTab, prevTab, currentTask, mutator, setTask1 } = useContext(TestContext)
+  const theMutator = mutator == null ? setTask1 : mutator
 
   return (
     <div>
@@ -887,14 +924,15 @@ export function Content() {
       {tab == 8 && <TAB8 debug={true} />}
       {tab == 9 && <TAB9 debug={true} />}
 
+      <TabSubmitter task={currentTask} mutate={theMutator} currentTabNum={tab} />
+
       <p className="text-sm text-gray-700 text-center mt-12">
         CURRENT TAB: <span className="text-red-500">{tab}</span>
         &nbsp;&nbsp;-&nbsp;&nbsp;PREV TAB: <span className="text-red-500">{prevTab}</span>
         &nbsp;&nbsp;-&nbsp;&nbsp;MAX VISITED: <span className="text-red-500">{lastTab}</span>
       </p>
       {/* <p className="text-sm text-gray-700 text-center mt-2">Visits: {visitStack.join(' ')}</p> */}
-      {/* <pre className="pre">{JSON.stringify(task1, null, 2)}</pre> */}
-      {/* <pre className="pre">{JSON.stringify(intrayBody, null, 2)}</pre> */}
+      <pre className="pre">{JSON.stringify(currentTask, null, 2)}</pre>
     </div>
   )
 }
