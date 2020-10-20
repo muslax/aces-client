@@ -169,7 +169,46 @@ function Header() {
   )
 }
 
-function Entry({ title, placeholder, fn, node, target, disabled = false, height = 4 }) {
+function Entry({ title, placeholder, fn, task, item, disabled = false, height = 4 }) {
+  const eTitle = title ? title : 'Aku perlu judul, bang...'
+
+  const labelActive = "block w-full rounded-t bg-blue-100 text-sm text-blue-600 font-semibold px-4 py-2 border border-blue-300"
+  const labelDisabled = "block w-full rounded-t bg-gray-100 text-sm text-gray-600 font-semibold px-4 py-2 border border-gray-400"
+  const textareaHeight = height == 1 ? "textarea-h1" : "textarea-h4"
+  const textActive = `${textareaHeight} w-full bg-gray-100 text-sm appearance-none rounded-b border-b border-l border-r border-blue-300 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
+  const textDisabled = `${textareaHeight} w-full bg-gray-100 text-sm appearance-none rounded-b border-b border-l border-r border-gray-400 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
+
+  function handleChange(e) {
+    fn({...task, [item]: e.target.value })
+  }
+
+  const myval = task[item]
+  // const saved = myval.length > 0
+
+  return (
+    <div className="my-6">
+      <label className={disabled ? labelDisabled : labelActive}>
+        {disabled && (
+          <svg className="h-4 mt-1 -mr-1 float-right bg-transparent fill-current w-auto mt-1s" tmp="486.733 486.733" viewBox="0 0 486.733 486.733" xmlns="http://www.w3.org/2000/svg">
+            <path d="M403.88,196.563h-9.484v-44.388c0-82.099-65.151-150.681-146.582-152.145c-2.225-0.04-6.671-0.04-8.895,0
+C157.486,1.494,92.336,70.076,92.336,152.175v44.388h-9.485c-14.616,0-26.538,15.082-26.538,33.709v222.632
+c0,18.606,11.922,33.829,26.539,33.829h321.028c14.616,0,26.539-15.223,26.539-33.829V230.272
+C430.419,211.646,418.497,196.563,403.88,196.563z M273.442,341.362v67.271c0,7.703-6.449,14.222-14.158,14.222H227.45
+c-7.71,0-14.159-6.519-14.159-14.222v-67.271c-7.477-7.36-11.83-17.537-11.83-28.795c0-21.334,16.491-39.666,37.459-40.513
+c2.222-0.09,6.673-0.09,8.895,0c20.968,0.847,37.459,19.179,37.459,40.513C285.272,323.825,280.919,334.002,273.442,341.362z
+M331.886,196.563h-84.072h-8.895h-84.072v-44.388c0-48.905,39.744-89.342,88.519-89.342c48.775,0,88.521,40.437,88.521,89.342
+V196.563z"/>
+          </svg>
+        )}
+        <span>{eTitle}</span>
+      </label>
+      {disabled && <textarea value={myval} disabled placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textDisabled}></textarea>}
+      {!disabled && <textarea value={myval} onChange={e => handleChange(e)} placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textActive}></textarea>}
+    </div>
+  )
+}
+
+function Entry2({ title, placeholder, fn, node, target, disabled = false, height = 4 }) {
   const eTitle = title ? title : 'Aku perlu judul, bang...'
 
   const labelActive = "block w-full rounded-t bg-blue-100 text-sm text-blue-600 font-semibold px-4 py-2 border border-blue-300"
@@ -204,42 +243,6 @@ V196.563z"/>
       </label>
       {disabled && <textarea value={myval} disabled placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textDisabled}></textarea>}
       {!disabled && <textarea value={myval} onChange={e => handleChange(e)} placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textActive}></textarea>}
-    </div>
-  )
-}
-
-function Entry2({ title, placeholder, target, disabled = false, height = 4 }) {
-  const eTitle = title ? title : 'Aku perlu judul, bang...'
-
-  const labelActive = "block w-full rounded-t bg-blue-100 text-sm text-blue-600 font-semibold px-4 py-2 border border-blue-300"
-  const labelDisabled = "block w-full rounded-t bg-gray-100 text-sm text-gray-600 font-semibold px-4 py-2 border border-gray-400"
-  const textareaHeight = height == 1 ? "textarea-h1" : "textarea-h4"
-  const textActive = `${textareaHeight} w-full bg-gray-100 text-sm appearance-none rounded-b border-b border-l border-r border-blue-300 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
-  const textDisabled = `${textareaHeight} w-full bg-gray-100 text-sm appearance-none rounded-b border-b border-l border-r border-gray-400 py-2 pb-0 px-4 focus:outline-none focus:bg-white`
-
-  function handleChange(e) {
-    target = e.target.value
-  }
-
-  return (
-    <div className="my-6">
-      <label className={disabled ? labelDisabled : labelActive}>
-        {disabled && (
-          <svg className="h-4 mt-1 -mr-1 float-right bg-transparent fill-current w-auto mt-1s" tmp="486.733 486.733" viewBox="0 0 486.733 486.733" xmlns="http://www.w3.org/2000/svg">
-            <path d="M403.88,196.563h-9.484v-44.388c0-82.099-65.151-150.681-146.582-152.145c-2.225-0.04-6.671-0.04-8.895,0
-C157.486,1.494,92.336,70.076,92.336,152.175v44.388h-9.485c-14.616,0-26.538,15.082-26.538,33.709v222.632
-c0,18.606,11.922,33.829,26.539,33.829h321.028c14.616,0,26.539-15.223,26.539-33.829V230.272
-C430.419,211.646,418.497,196.563,403.88,196.563z M273.442,341.362v67.271c0,7.703-6.449,14.222-14.158,14.222H227.45
-c-7.71,0-14.159-6.519-14.159-14.222v-67.271c-7.477-7.36-11.83-17.537-11.83-28.795c0-21.334,16.491-39.666,37.459-40.513
-c2.222-0.09,6.673-0.09,8.895,0c20.968,0.847,37.459,19.179,37.459,40.513C285.272,323.825,280.919,334.002,273.442,341.362z
-M331.886,196.563h-84.072h-8.895h-84.072v-44.388c0-48.905,39.744-89.342,88.519-89.342c48.775,0,88.521,40.437,88.521,89.342
-V196.563z"/>
-          </svg>
-        )}
-        <span>{eTitle}</span>
-      </label>
-      {disabled && <textarea value={target} disabled placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textDisabled}></textarea>}
-      {!disabled && <textarea value={target} onChange={e => handleChange(e)} placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textActive}></textarea>}
     </div>
   )
 }
@@ -453,9 +456,9 @@ function TAB1({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Tahap 1 - Analisis kepentingan" placeholder={"Hora hayen"} fn={setTask1} node={task1} target="t1" disabled={saved} />
-          <Entry title="Tahap 2 - Topik paling penting" placeholder={"Hora hayen"} fn={setTask1} node={task1} target="t2" disabled={saved} />
-          <Entry title="Tahap 3 - Alasan mengapa topik palin penting" placeholder={"Hora hayen"} fn={setTask1} node={task1} target="t3" disabled={saved} />
+          <Entry title="Tahap 1 - Analisis kepentingan" placeholder={"Hora hayen"} fn={setTask1} task={task1} item="t1" disabled={saved} />
+          <Entry title="Tahap 2 - Topik paling penting" placeholder={"Hora hayen"} fn={setTask1} task={task1} item="t2" disabled={saved} />
+          <Entry title="Tahap 3 - Alasan mengapa topik palin penting" placeholder={"Hora hayen"} fn={setTask1} task={task1} item="t3" disabled={saved} />
         </div>
         <Debug states={_debug} show={debug} />
       </div>
