@@ -1,4 +1,5 @@
 import { createContext, memo, useContext, useState } from 'react'
+import Link from 'next/link'
 import useUser, { updateUserPath } from 'lib/useUser'
 import fetchJson from 'lib/fetchJson'
 import Layout from "components/Layout";
@@ -263,6 +264,11 @@ function Content() {
     <div className="">
       <Header />
       <Step />
+      <p className="text-sm text-center my-8">
+        <Link href="/welcome">
+          <a className="rounded border px-4 py-3 text-blue-600 hover:text-red-600">Back to Home</a>
+        </Link>
+      </p>
       {/* <pre className="pre my-10">PROGRESS: {JSON.stringify(progress, null, 2)}</pre> */}
     </div>
   )

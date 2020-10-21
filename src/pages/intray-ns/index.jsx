@@ -3,13 +3,15 @@ import useUser, { updateUserPath } from 'lib/useUser'
 import fetchJson from 'lib/fetchJson'
 import LayoutIntray from "components/LayoutIntray";
 import useSWR, { mutate } from 'swr';
-import { getApiUrl, sequenceArray, msToTimeString } from "lib/utils";
+import { getApiUrl, startTest, msToTimeString } from "lib/utils";
 import { ACESModule, ACESTestItem, getTestSlug } from "lib/modules";
 import { Intray2Body, Intray2Template } from "lib/evidence";
 import { func } from 'prop-types';
+import Link from 'next/link';
 
-const BASE_API_URL = "/api/intray-n"
+const BASE_API_URL = "/api/intray-ns"
 const MAX_TAB_NUM = 9
+const PAGE_TITLE = "Online Intray"
 
 export default function  Intray() {
   const { user } = useUser({ redirectTo: "/" })
@@ -25,7 +27,7 @@ export default function  Intray() {
 
 export const PageContent = memo(() => {
   return (
-    <LayoutIntray title="Joko Lodang">
+    <LayoutIntray title={PAGE_TITLE}>
       <Content />
     </LayoutIntray>
   )
@@ -35,12 +37,11 @@ const TestContext = createContext();
 
 function TestProvider({ user, children }) {
   const testSlug = "intray-n"
-  const [tab, setTab] = useState(1)
+  const [tab, setTab] = useState(0)
   const [prevTab, setPrevTab] = useState(0)
-  const [lastTab, setLastTab] = useState(0)
-  // const [visitStack, setVisitStack] = useState([])
+  const [furthest, setFurthest] = useState(0)
 
-  const [task1, setTask1] = useState({ t1: "", t2: "", t3: "", saved: false })
+  const [task1, setTask1] = useState({ t1: "", t2: "", t3: "" })
   const [task2, setTask2] = useState({ t1: "", t2: "", t3: "", t4: "", t5: "" })
   const [task3, setTask3] = useState({ t1: "", t2: "", t3: "", t4: "", t5: "" })
   const [task4, setTask4] = useState({ t1: "", t2: "", t3: "", t4: "", p1: "", p2: "", p3: "", p4: "" })
@@ -50,24 +51,22 @@ function TestProvider({ user, children }) {
   const [task8, setTask8] = useState({ w1: "", e1: "", e2: "", t1: "", t2: "" })
   const [task9, setTask9] = useState({ u1: "", u2: "", u3: "", u4: "", u5: "" })
 
-  const [currentTask, setCurrentTask] = useState(task1)
-  const [mutator, setMutator] = useState(null)
+  // const swrOptions = process.env.NODE_ENV == 'development' ? {
+  //   refreshInterval: 0, revalidateOnFocus: false
+  // } : { revalidateOnFocus: true }
+  const swrOptions = {}
 
-  const swrOptions = process.env.NODE_ENV == 'development' ? {
-    refreshInterval: 0, revalidateOnFocus: false
-  } : { revalidateOnFocus: true }
+  const url = getApiUrl(BASE_API_URL, user, {fullname: user.fullname, create: true})
+  const { data: progress, error, mutate: mutateProgress } = useSWR(url, fetchJson, swrOptions)
 
   return (
     <TestContext.Provider value={{
       user,
+      progress, mutateProgress,
       testSlug,
       tab, setTab,
       prevTab, setPrevTab,
-      lastTab, setLastTab,
-      currentTask, setCurrentTask,
-      mutator, setMutator,
-      // biggestTabNum, setBiggestTabNum,
-      // visitStack, setVisitStack,
+      furthest, setFurthest,
       task1, setTask1,
       task2, setTask2,
       task3, setTask3,
@@ -84,73 +83,18 @@ function TestProvider({ user, children }) {
 }
 
 function Header() {
-  const { user, tab, setTab, lastTab, setPrevTab,
-    currentTask, setCurrentTask,
-    mutator, setMutator,
-    task1, setTask1,
-    task2, setTask2,
-    task3, setTask3,
-    task4, setTask4,
-    task5, setTask5,
-    task6, setTask6,
-    task7, setTask7,
-    task8, setTask8,
-    task9, setTask9
-   } = useContext(TestContext)
+  const { user, tab, setTab, setPrevTab, furthest } = useContext(TestContext)
 
   function handleClick(e) {
     e.preventDefault()
     const n = parseInt(e.target.value)
 
     // Skipping prohibitet
-    if (n > lastTab) return false
+    if (n > furthest) return false
 
     // Provide prev state
     setPrevTab(tab)
-
-    // Setup task and mutator
-    switch (n) {
-      case 1:
-        setCurrentTask(task1)
-        setMutator(setTask1)
-        break
-      case 2:
-        setCurrentTask(task2)
-        setMutator(setTask2)
-        break
-      case 3:
-        setCurrentTask(task3)
-        setMutator(setTask3)
-        break
-      case 4:
-        setCurrentTask(task4)
-        setMutator(setTask4)
-        break
-      case 5:
-        setCurrentTask(task5)
-        setMutator(setTask5)
-        break
-      case 6:
-        setCurrentTask(task6)
-        setMutator(setTask6)
-        break
-      case 7:
-        setCurrentTask(task7)
-        setMutator(setTask7)
-        break
-      case 8:
-        setCurrentTask(task8)
-        setMutator(setTask8)
-        break
-      case 9:
-        setCurrentTask(task9)
-        setMutator(setTask9)
-        break
-    }
     setTab(n)
-
-
-
     window.scrollTo(0, 0)
   }
 
@@ -160,12 +104,13 @@ function Header() {
   const navPastCurrent = "PAST-CURRENT w-full h-12 whitespace-no-wrap uppercase bg-teal-500 border-b border-teal-600 text-white cursor-default"
 
   function whichClass(n) {
-    //
-    if (n == tab) return navCurrent
-    else if (n > lastTab) return navWaiting
-
+    if (tab == 0) return navWaiting
+    else if (n == tab) return navCurrent
+    else if (n > furthest) return navWaiting
     return navPast
   }
+
+  const tabs = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
   return (
     <div className="text-gray-700">
@@ -200,33 +145,11 @@ function Header() {
               <div className="flex flex-grow justify-center w-full">
                 <div className="w-full border-l border-gray-400">
                   <ul className="grid grid-cols-9 gap-0 text-xs md:text-sm text-gray-500 py-3s">
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="1" className={whichClass(1)}>Bab 1</button>
+                  {tabs.map(t => (
+                    <li key={`TAB${t}`} className="flex min-w-tab items-center justify-center">
+                      <button onClick={e => handleClick(e)} value={t} className={whichClass(t)}>Bab {t}</button>
                     </li>
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="2" className={whichClass(2)}>Bab 2</button>
-                    </li>
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="3" className={whichClass(3)}>Bab 3</button>
-                    </li>
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="4" className={whichClass(4)}>Bab 4</button>
-                    </li>
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="5" className={whichClass(5)}>Bab 5</button>
-                    </li>
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="6" className={whichClass(6)}>Bab 6</button>
-                    </li>
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="7" className={whichClass(7)}>Bab 7</button>
-                    </li>
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="8" className={whichClass(8)}>Bab 8</button>
-                    </li>
-                    <li className="flex min-w-tab items-center justify-center">
-                      <button onClick={e => handleClick(e)} value="9" className={whichClass(9)}>Bab 9</button>
-                    </li>
+                  ))}
                   </ul>
                 </div>
               </div>
@@ -255,7 +178,6 @@ function Entry({ title, placeholder, fn, task, item, disabled = false, height = 
   }
 
   const myval = task[item]
-  // const saved = myval.length > 0
 
   return (
     <div className="my-6">
@@ -274,7 +196,7 @@ V196.563z"/>
         )}
         <span>{eTitle}</span>
       </label>
-      {disabled && <textarea value={myval} disabled placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textDisabled}></textarea>}
+      {disabled && <textarea value={myval} disabled placeholder={myval ? myval : "[Anda tidak mengisi]"} className={textDisabled}></textarea>}
       {!disabled && <textarea value={myval} onChange={e => handleChange(e)} placeholder={placeholder ? placeholder : "Tulis di sini..."} className={textActive}></textarea>}
     </div>
   )
@@ -303,7 +225,7 @@ function Debug({ states, show }) {
 }
 
 function TabSubmitter({ task, mutate, currentTabNum }) {
-  const { setTab, prevTab, setPrevTab, lastTab, setLastTab } = useContext(TestContext)
+  const { user, progress, tab, setTab, setPrevTab, setFurthest, mutateProgress } = useContext(TestContext)
   const [submittable, setSubmittable] = useState(false)
 
   const checkNormal = "block mx-auto text-gray-600 text-sm text-center font-semibolds hover:text-blue-500 cursor-pointer"
@@ -327,15 +249,33 @@ function TabSubmitter({ task, mutate, currentTabNum }) {
     console.log("handleSubmit()")
     console.log(task)
 
-    // Mark task as saved
-    // mutate({...task, ["saved"]: true})
-    mutate({...task, saved: true})
+    const body = {
+      ...task,
+      task: 'task' + tab,
+      lastTouched: progress.touched,
+    }
+    console.log(body)
+
+    const url = getApiUrl(BASE_API_URL, user)
+    const response = await fetchJson(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+    mutateProgress()
+
+
+    // Mark task as saved. Done after submitting data to API
+    mutate({...task, ["saved"]: true})
 
     setPrevTab(currentTabNum) // memorize
 
-    if (lastTab < currentTabNum) setLastTab(currentTabNum)
-
-    if (currentTabNum < MAX_TAB_NUM) setTab(currentTabNum + 1)
+    if (currentTabNum < MAX_TAB_NUM) {
+      setTab(currentTabNum + 1)
+      setFurthest(currentTabNum + 1)
+    }
 
     window.scrollTo(0, 0)
   }
@@ -359,23 +299,70 @@ function TabSubmitter({ task, mutate, currentTabNum }) {
   )
 }
 
-function setCurrentTab(n) {
-  const { setTab, lastTab, setLastTab } = useContext(TestContext)
-  setTab(n)
+function TAB0 () {
+  const { user, progress, setTab, setFurthest } = useContext(TestContext)
+  const btnActive = "rounded border-2 border-green-400 text-lg text-green-500 px-6 py-3 hover:border-green-500 hover:bg-green-500 hover:text-white active:bg-green-700"
 
-  if (lastTab < n) setLastTab(n)
-  return n;
+  async function start() {
+
+    const url = getApiUrl(BASE_API_URL, user)
+    const response = await fetchJson(url, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+  }
+
+  return (
+    <div className="relative">
+      <h1 className="text-center text-teal-500 text-2xl font-bold uppercase py-8">Intray adalah...</h1>
+
+      <div className="grad absolute z-0 w-full h-24-rem bg-gradient-to-b from-green-200 opacity-25"></div>
+
+      <div className="tugas relative z-40 border-t border-green-200">
+        <div className="px-6 pt-10 pb-1">
+          <div className="max-w-2xl mx-auto text-gray-700">
+            <h3 className="text-xl font-semibold mb-6">Andalusia</h3>
+            <p className="my-6">
+              Pretium pharetra ornare facilisi urna hendrerit efficitur suscipit laoreet accumsan, molestie dictumst velit mus aptent mi nam consequat per, curabitur posuere phasellus proin iaculis rhoncus ligula in, egestas penatibus augue taciti habitasse elit mollis pulvinar. In lacinia aliquet bibendum nullam massa dictum sapien suscipit neque, vivamus morbi consequat quam urna vestibulum senectus pulvinar nec, vitae cursus rhoncus fringilla augue elit aliquam curabitur, hac iaculis adipiscing velit gravida ridiculus felis magnis. Etiam ante massa consequat mus ligula laoreet lacinia integer, suscipit justo imperdiet aptent potenti volutpat netus ultrices, interdum vitae dictum class proin tempor conubia enim sodales, hac tellus erat mauris luctus id aliquet.
+            </p>
+            <h3 className="text-xl font-semibold mb-6">Khartoum</h3>
+            <p className="my-6">
+              Penatibus augue taciti habitasse elit mollis pulvinar. In lacinia aliquet bibendum nullam massa dictum sapien suscipit neque, vivamus morbi consequat quam urna vestibulum senectus pulvinar nec, vitae cursus rhoncus fringilla augue elit aliquam curabitur, hac iaculis adipiscing velit gravida ridiculus felis magnis. Etiam ante massa consequat mus ligula laoreet lacinia integer, suscipit justo imperdiet aptent potenti volutpat netus ultrices, interdum vitae dictum class proin tempor conubia enim sodales, hac tellus erat mauris luctus id aliquet.
+            </p>
+            <h3 className="text-xl font-semibold mb-6">Mojogedang</h3>
+            <p className="my-6">
+              Dictumst velit mus aptent mi nam consequat per, curabitur posuere phasellus proin iaculis rhoncus ligula in, egestas penatibus augue taciti habitasse elit mollis pulvinar. In lacinia aliquet bibendum nullam massa dictum sapien suscipit neque, vivamus morbi consequat quam urna vestibulum senectus pulvinar nec, vitae cursus rhoncus fringilla augue elit aliquam curabitur, hac iaculis adipiscing velit gravida ridiculus felis magnis. Etiam ante massa consequat mus ligula laoreet lacinia integer, suscipit justo imperdiet aptent potenti volutpat netus ultrices, interdum vitae dictum class proin tempor conubia enim sodales, hac tellus erat mauris luctus id aliquet.
+            </p>
+          </div>
+        </div>
+      </div>
+      <p className="text-center mt-8">
+        <button id="submit" onClick={e => {
+          startTest(BASE_API_URL, user, progress)
+          setTab(1)
+          setFurthest(1)
+        }} type="submit" className={btnActive}>Simpan dan lanjutkan</button>
+      </p>
+    </div>
+  )
 }
 
 function TAB1({ debug }) {
-  // const tabNum = setCurrentTab(1)
-  // const tabNum = 1
+  const tabNum = 1
   const { task1, setTask1 } = useContext(TestContext)
-  const saved = task1?.saved  //? true : false
+  const saved = task1.saved ? true : false
   const _debug = [
-    ["T1", task1?.t1],
-    ["T2", task1?.t2],
-    ["T3", task1?.t3],
+    ["T1", task1.t1],
+    ["T2", task1.t2],
+    ["T3", task1.t3],
+  ]
+  const entries = [
+    {title: "Tahap 1 - Analisis kepentingan", placeholder: "Ketik jawaban Anda di sini", item: "t1"},
+    {title: "Tahap 2 - Topik paling penting", placeholder: "Ketik jawaban Anda di sini", item: "t2"},
+    {title: "Tahap 3 - Alasan mengapa topik palin penting", placeholder: "Ketik jawaban Anda di sini", item: "t3"},
   ]
 
   return (
@@ -411,22 +398,17 @@ function TAB1({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Tahap 1 - Analisis kepentingan" placeholder={"Hora hayen"} fn={setTask1} task={task1} item="t1" disabled={saved} />
-          <Entry title="Tahap 2 - Topik paling penting" placeholder={"Hora hayen"} fn={setTask1} task={task1} item="t2" disabled={saved} />
-          <Entry title="Tahap 3 - Alasan mengapa topik palin penting" placeholder={"Hora hayen"} fn={setTask1} task={task1} item="t3" disabled={saved} />
+          {entries.map((e) => <Entry key={e.item} title={e.title} placeholder={e.placeholder} fn={setTask1} task={task1} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
       </div>
-      <pre className="pre">{JSON.stringify(task1)}</pre>
 
-      {/* {!saved && <TabSubmitter task={task1} mutate={setTask1} currentTabNum={tabNum} />} */}
+      {!saved && <TabSubmitter task={task1} mutate={setTask1} currentTabNum={tabNum} />}
     </div>
   )
 }
 
 function TAB2({ debug }) {
-  // const tabNum = setCurrentTab(2)
-  // const tabNum = 2
   const { tab, task2, setTask2 } = useContext(TestContext)
   const saved = task2.saved ? true : false
   const _debug = [
@@ -435,6 +417,13 @@ function TAB2({ debug }) {
     ["T3", task2.t3],
     ["T4", task2.t4],
     ["T5", task2.t5],
+  ]
+  const entries = [
+    {title: "Tindakan/inisiatif 1", placeholder: "Ketik jawaban Anda di sini", item: "t1"},
+    {title: "Tindakan/inisiatif 2", placeholder: "Ketik jawaban Anda di sini", item: "t2"},
+    {title: "Tindakan/inisiatif 3", placeholder: "Ketik jawaban Anda di sini", item: "t3"},
+    {title: "Tindakan/inisiatif 4", placeholder: "Ketik jawaban Anda di sini", item: "t4"},
+    {title: "Tindakan/inisiatif 5", placeholder: "Ketik jawaban Anda di sini", item: "t5"},
   ]
 
   return (
@@ -470,11 +459,7 @@ function TAB2({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Tindakan/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t1" disabled={saved} />
-          <Entry title="Tindakan/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t2" disabled={saved} />
-          <Entry title="Tindakan/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t3" disabled={saved} />
-          <Entry title="Tindakan/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t4" disabled={saved} />
-          <Entry title="Tindakan/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask2} task={task2} item="t5" disabled={saved} />
+          {entries.map((e) => <Entry key={e.item} title={e.title} placeholder={e.placeholder} fn={setTask2} task={task2} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
         {!saved && <TabSubmitter task={task2} mutate={setTask2} currentTabNum={tab} />}
@@ -484,8 +469,7 @@ function TAB2({ debug }) {
 }
 
 function TAB3({ debug }) {
-  const tabNum = setCurrentTab(3)
-  const { task3, setTask3 } = useContext(TestContext)
+  const { tab, task3, setTask3 } = useContext(TestContext)
   const saved = task3.saved ? true : false
   const _debug = [
     ["T1", task3.t1],
@@ -493,6 +477,13 @@ function TAB3({ debug }) {
     ["T3", task3.t3],
     ["T4", task3.t4],
     ["T5", task3.t5],
+  ]
+  const entries = [
+    {title: "Tindakan/inisiatif 1", placeholder: "Ketik jawaban Anda di sini", item: "t1"},
+    {title: "Tindakan/inisiatif 2", placeholder: "Ketik jawaban Anda di sini", item: "t2"},
+    {title: "Tindakan/inisiatif 3", placeholder: "Ketik jawaban Anda di sini", item: "t3"},
+    {title: "Tindakan/inisiatif 4", placeholder: "Ketik jawaban Anda di sini", item: "t4"},
+    {title: "Tindakan/inisiatif 5", placeholder: "Ketik jawaban Anda di sini", item: "t5"},
   ]
 
   return (
@@ -528,32 +519,37 @@ function TAB3({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Tindakan/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t1" disabled={saved} />
-          <Entry title="Tindakan/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t2" disabled={saved} />
-          <Entry title="Tindakan/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t3" disabled={saved} />
-          <Entry title="Tindakan/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t4" disabled={saved} />
-          <Entry title="Tindakan/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask3} task={task3} item="t5" disabled={saved} />
+          {entries.map((e) => <Entry key={e.item} title={e.title} placeholder={e.placeholder} fn={setTask3} task={task3} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
-        {!saved && <TabSubmitter task={task3} mutate={setTask3} currentTabNum={tabNum} />}
+        {!saved && <TabSubmitter task={task3} mutate={setTask3} currentTabNum={tab} />}
       </div>
     </div>
   )
 }
 
 function TAB4({ debug }) {
-  const tabNum = setCurrentTab(4)
-  const { task4, setTask4 } = useContext(TestContext)
+  const { tab, task4, setTask4 } = useContext(TestContext)
   const saved = task4.saved ? true : false
   const _debug = [
     ["T1", task4.t1],
-    ["T2", task4.t2],
-    ["T3", task4.t3],
-    ["T4", task4.t4],
     ["P1", task4.p1],
+    ["T2", task4.t2],
     ["P2", task4.p2],
+    ["T3", task4.t3],
     ["P3", task4.p3],
+    ["T4", task4.t4],
     ["P4", task4.p4],
+  ]
+  const entries = [
+    {height: 1, title: "Topik penugasan 1", placeholder: "Ketik jawaban Anda di sini", item: "t1"},
+    {height: 4, title: "Berperan untuk",    placeholder: "Ketik jawaban Anda di sini", item: "p1"},
+    {height: 1, title: "Topik penugasan 2", placeholder: "Ketik jawaban Anda di sini", item: "t2"},
+    {height: 4, title: "Berperan untuk",    placeholder: "Ketik jawaban Anda di sini", item: "p2"},
+    {height: 1, title: "Topik penugasan 3", placeholder: "Ketik jawaban Anda di sini", item: "t3"},
+    {height: 4, title: "Berperan untuk",    placeholder: "Ketik jawaban Anda di sini", item: "p3"},
+    {height: 1, title: "Topik penugasan 4", placeholder: "Ketik jawaban Anda di sini", item: "t4"},
+    {height: 4, title: "Berperan untuk",    placeholder: "Ketik jawaban Anda di sini", item: "p4"},
   ]
 
   return (
@@ -589,28 +585,17 @@ function TAB4({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry height={1} title="Topik penugasan 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="t1" disabled={saved} />
-          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="p1" disabled={saved} />
-          <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Topik penugasan 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="t2" disabled={saved} />
-          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="p2" disabled={saved} />
-          <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Topik penugasan 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="t3" disabled={saved} />
-          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="p3" disabled={saved} />
-          <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Topik penugasan 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="t4" disabled={saved} />
-          <Entry title="Berperan untuk" placeholder={"Ketik jawaban Anda di sini"} fn={setTask4} task={task4} item="p4" disabled={saved} />
+          {entries.map((e) => <Entry key={e.item} height={e.height} title={e.title} placeholder={e.placeholder} fn={setTask4} task={task4} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
-        {!saved && <TabSubmitter task={task4} mutate={setTask4} currentTabNum={tabNum} />}
+        {!saved && <TabSubmitter task={task4} mutate={setTask4} currentTabNum={tab} />}
       </div>
     </div>
   )
 }
 
 function TAB5({ debug }) {
-  const tabNum = setCurrentTab(5)
-  const { task5, setTask5 } = useContext(TestContext)
+  const { tab, task5, setTask5 } = useContext(TestContext)
   const saved = task5.saved ? true : false
   const _debug = [
     ["I1", task5.i1],
@@ -618,6 +603,13 @@ function TAB5({ debug }) {
     ["I3", task5.i3],
     ["I4", task5.i4],
     ["I5", task5.i5],
+  ]
+  const entries = [
+    {title: "Topik/informasi 1", placeholder: "Ketik jawaban Anda di sini", item: "i1"},
+    {title: "Topik/informasi 2", placeholder: "Ketik jawaban Anda di sini", item: "i2"},
+    {title: "Topik/informasi 3", placeholder: "Ketik jawaban Anda di sini", item: "i3"},
+    {title: "Topik/informasi 4", placeholder: "Ketik jawaban Anda di sini", item: "i4"},
+    {title: "Topik/informasi 5", placeholder: "Ketik jawaban Anda di sini", item: "i5"},
   ]
 
   return (
@@ -653,22 +645,17 @@ function TAB5({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Topik/informasi 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i1" disabled={saved} />
-          <Entry title="Topik/informasi 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i2" disabled={saved} />
-          <Entry title="Topik/informasi 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i3" disabled={saved} />
-          <Entry title="Topik/informasi 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i4" disabled={saved} />
-          <Entry title="Topik/informasi 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask5} task={task5} item="i5" disabled={saved} />
+          {entries.map(e => <Entry key={e.item} title={e.title} placeholder={e.placeholder} fn={setTask5} task={task5} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
-        {!saved && <TabSubmitter task={task5} mutate={setTask5} currentTabNum={tabNum} />}
+        {!saved && <TabSubmitter task={task5} mutate={setTask5} currentTabNum={tab} />}
       </div>
     </div>
   )
 }
 
 function TAB6({ debug }) {
-  const tabNum = setCurrentTab(6)
-  const { task6, setTask6 } = useContext(TestContext)
+  const { tab, task6, setTask6 } = useContext(TestContext)
   const saved = task6.saved ? true : false
   const _debug = [
     ["U1", task6.u1],
@@ -676,6 +663,13 @@ function TAB6({ debug }) {
     ["U3", task6.u3],
     ["U4", task6.u4],
     ["U5", task6.u5],
+  ]
+  const entries = [
+    {title: "Upaya/inisiatif 1", placeholder: "Ketik jawaban Anda di sini", item: "u1"},
+    {title: "Upaya/inisiatif 2", placeholder: "Ketik jawaban Anda di sini", item: "u2"},
+    {title: "Upaya/inisiatif 3", placeholder: "Ketik jawaban Anda di sini", item: "u3"},
+    {title: "Upaya/inisiatif 4", placeholder: "Ketik jawaban Anda di sini", item: "u4"},
+    {title: "Upaya/inisiatif 5", placeholder: "Ketik jawaban Anda di sini", item: "u5"},
   ]
 
   return (
@@ -711,22 +705,17 @@ function TAB6({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Upaya/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i1" disabled={saved} />
-          <Entry title="Upaya/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i2" disabled={saved} />
-          <Entry title="Upaya/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i3" disabled={saved} />
-          <Entry title="Upaya/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i4" disabled={saved} />
-          <Entry title="Upaya/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask6} task={task6} item="i5" disabled={saved} />
+          {entries.map(e => <Entry key={e.item} title={e.title} placeholder={e.placeholder} fn={setTask6} task={task6} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
-        {!saved && <TabSubmitter task={task6} mutate={setTask6} currentTabNum={tabNum} />}
+        {!saved && <TabSubmitter task={task6} mutate={setTask6} currentTabNum={tab} />}
       </div>
     </div>
   )
 }
 
 function TAB7({ debug }) {
-  const tabNum = setCurrentTab(7)
-  const { task7, setTask7 } = useContext(TestContext)
+  const { tab, task7, setTask7 } = useContext(TestContext)
   const saved = task7.saved ? true : false
   const _debug = [
     ["U1", task7.u1],
@@ -737,6 +726,16 @@ function TAB7({ debug }) {
     ["A3", task7.a3],
     ["U4", task7.u4],
     ["A4", task7.a4],
+  ]
+  const entries = [
+    {height: 1, title: "Usulan/rancangan 1", placeholder: "Ketik jawaban Anda di sini", item: "u1"},
+    {height: 4, title: "Alasan", placeholder: "Ketik jawaban Anda di sini", item: "a1"},
+    {height: 1, title: "Usulan/rancangan 2", placeholder: "Ketik jawaban Anda di sini", item: "u2"},
+    {height: 4, title: "Alasan", placeholder: "Ketik jawaban Anda di sini", item: "a2"},
+    {height: 1, title: "Usulan/rancangan 3", placeholder: "Ketik jawaban Anda di sini", item: "u3"},
+    {height: 4, title: "Alasan", placeholder: "Ketik jawaban Anda di sini", item: "a3"},
+    {height: 1, title: "Usulan/rancangan 4", placeholder: "Ketik jawaban Anda di sini", item: "u4"},
+    {height: 4, title: "Alasan", placeholder: "Ketik jawaban Anda di sini", item: "a4"},
   ]
 
   return (
@@ -772,35 +771,31 @@ function TAB7({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry height={1} title="Usulan/rancangan 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="u1" disabled={saved} />
-          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="a1" disabled={saved} />
-          <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Usulan/rancangan 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="u2" disabled={saved} />
-          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="a2" disabled={saved} />
-          <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Usulan/rancangan 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="u3" disabled={saved} />
-          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="a3" disabled={saved} />
-          <hr className="border-pink-300 mb-8"/>
-          <Entry height={1} title="Usulan/rancangan 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="u4" disabled={saved} />
-          <Entry title="Alasan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask7} task={task7} item="a4" disabled={saved} />
+          {entries.map(e => <Entry key={e.item} height={e.height} title={e.title} placeholder={e.placeholder} fn={setTask7} task={task7} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
-        {!saved && <TabSubmitter task={task7} mutate={setTask7} currentTabNum={tabNum} />}
+        {!saved && <TabSubmitter task={task7} mutate={setTask7} currentTabNum={tab} />}
       </div>
     </div>
   )
 }
 
 function TAB8({ debug }) {
-  const tabNum = setCurrentTab(8)
-  const { task8, setTask8 } = useContext(TestContext)
+  const { tab, task8, setTask8 } = useContext(TestContext)
   const saved = task8.saved ? true : false
   const _debug = [
     ["W1", task8.w1],
     ["E1", task8.e1],
     ["E2", task8.e2],
-    ["T2", task8.t1],
-    ["T3", task8.t2],
+    ["T1", task8.t1],
+    ["T2", task8.t2],
+  ]
+  const entries = [
+    {title: "Tindakan yang wajib dilakukan", placeholder: "Ketik jawaban Anda di sini", item: "w1"},
+    {title: "Tindakan paling efektif 1", placeholder: "Ketik jawaban Anda di sini", item: "e1"},
+    {title: "Tindakan paling efektif 2", placeholder: "Ketik jawaban Anda di sini", item: "e2"},
+    {title: "Tindakan paling tidak efektif 1", placeholder: "Ketik jawaban Anda di sini", item: "t1"},
+    {title: "Tindakan paling tidak efektif 2", placeholder: "Ketik jawaban Anda di sini", item: "t2"},
   ]
 
   return (
@@ -836,22 +831,17 @@ function TAB8({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Tindakan yang wajib dilakukan" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="w1" disabled={saved} />
-          <Entry title="Tindakan paling efektif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="e1" disabled={saved} />
-          <Entry title="Tindakan paling efektif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="e2" disabled={saved} />
-          <Entry title="Tindakan paling tidak efektif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="t1" disabled={saved} />
-          <Entry title="Tindakan paling tidak efektif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask8} task={task8} item="t2" disabled={saved} />
+          {entries.map(e => <Entry key={e.item} title={e.title} placeholder={e.placeholder} fn={setTask8} task={task8} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
-        {!saved && <TabSubmitter task={task8} mutate={setTask8} currentTabNum={tabNum} />}
+        {!saved && <TabSubmitter task={task8} mutate={setTask8} currentTabNum={tab} />}
       </div>
     </div>
   )
 }
 
 function TAB9({ debug }) {
-  const tabNum = setCurrentTab(9)
-  const { task9, setTask9 } = useContext(TestContext)
+  const { tab, task9, setTask9 } = useContext(TestContext)
   const saved = task9.saved ? true : false
   const _debug = [
     ["U1", task9.u1],
@@ -859,6 +849,13 @@ function TAB9({ debug }) {
     ["U3", task9.u3],
     ["U4", task9.u4],
     ["U5", task9.u5],
+  ]
+  const entries = [
+    {title: "Upaya/inisiatif 1", placeholder: "Ketik jawaban Anda di sini", item: "u1"},
+    {title: "Upaya/inisiatif 2", placeholder: "Ketik jawaban Anda di sini", item: "u2"},
+    {title: "Upaya/inisiatif 3", placeholder: "Ketik jawaban Anda di sini", item: "u3"},
+    {title: "Upaya/inisiatif 4", placeholder: "Ketik jawaban Anda di sini", item: "u4"},
+    {title: "Upaya/inisiatif 5", placeholder: "Ketik jawaban Anda di sini", item: "u5"},
   ]
 
   return (
@@ -894,26 +891,22 @@ function TAB9({ debug }) {
 
       <div className="px-6">
         <div className="max-w-2xl mx-auto text-gray-700">
-          <Entry title="Upaya/inisiatif 1" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u1" disabled={saved} />
-          <Entry title="Upaya/inisiatif 2" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u2" disabled={saved} />
-          <Entry title="Upaya/inisiatif 3" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u3" disabled={saved} />
-          <Entry title="Upaya/inisiatif 4" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u4" disabled={saved} />
-          <Entry title="Upaya/inisiatif 5" placeholder={"Ketik jawaban Anda di sini"} fn={setTask9} task={task9} item="u5" disabled={saved} />
+          {entries.map(e => <Entry key={e.item} title={e.title} placeholder={e.placeholder} fn={setTask9} task={task9} item={e.item} disabled={saved} />)}
         </div>
         <Debug states={_debug} show={debug} />
-        {!saved && <TabSubmitter task={task9} mutate={setTask9} currentTabNum={tabNum} />}
+        {!saved && <TabSubmitter task={task9} mutate={setTask9} currentTabNum={tab} />}
       </div>
     </div>
   )
 }
 
 export function Content() {
-  const { tab, lastTab, prevTab, currentTask, mutator, setTask1 } = useContext(TestContext)
-  const theMutator = mutator == null ? setTask1 : mutator
+  const { user, progress, tab, prevTab, furthest } = useContext(TestContext)
 
   return (
     <div>
       <Header />
+      {tab == 0 && <TAB0 debug={true} />}
       {tab == 1 && <TAB1 debug={true} />}
       {tab == 2 && <TAB2 debug={true} />}
       {tab == 3 && <TAB3 debug={true} />}
@@ -924,15 +917,18 @@ export function Content() {
       {tab == 8 && <TAB8 debug={true} />}
       {tab == 9 && <TAB9 debug={true} />}
 
-      <TabSubmitter task={currentTask} mutate={theMutator} currentTabNum={tab} />
-
       <p className="text-sm text-gray-700 text-center mt-12">
         CURRENT TAB: <span className="text-red-500">{tab}</span>
         &nbsp;&nbsp;-&nbsp;&nbsp;PREV TAB: <span className="text-red-500">{prevTab}</span>
-        &nbsp;&nbsp;-&nbsp;&nbsp;MAX VISITED: <span className="text-red-500">{lastTab}</span>
+        &nbsp;&nbsp;-&nbsp;&nbsp;FURTHEST: <span className="text-red-500">{furthest}</span>
       </p>
-      {/* <p className="text-sm text-gray-700 text-center mt-2">Visits: {visitStack.join(' ')}</p> */}
-      <pre className="pre">{JSON.stringify(currentTask, null, 2)}</pre>
+      <p className="text-sm text-center my-8">
+        <Link href="/welcome">
+          <a className="rounded border px-4 py-3 text-blue-600 hover:text-red-600">Back to Home</a>
+        </Link>
+      </p>
+      <pre className="pre my-8">{JSON.stringify(progress, null, 2)}</pre>
+      <pre className="pre my-8">{JSON.stringify(user, null, 2)}</pre>
     </div>
   )
 }

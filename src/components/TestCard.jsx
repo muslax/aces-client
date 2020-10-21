@@ -82,7 +82,7 @@ export default function TestCard ({ user, module }) {
       }
       `}</style>
     </div>
-    <pre className="pre">{JSON.stringify(acesModule, null, 2)}</pre>
+    {/* <pre className="pre">{JSON.stringify(acesModule, null, 2)}</pre> */}
     </>
   )
 }

@@ -123,6 +123,12 @@ function Content() {
         <h3 className="text-md text-gray-600 font-bold uppercase tracking-wide mb-4">Test Mandiri (Online)</h3>
         {tests.map((module) => <TestCard key={module.slug} user={user} module={module} />)}
         <br/>
+        <p className="text-center my-6">
+          <Link href="/intray-ns">
+            <a className="rounded border px-4 py-3 text-blue-600 hover:text-red-600">Coba INTRAY</a>
+          </Link>
+        </p>
+        <br/>
         <h3 className="text-md text-gray-600 font-bold uppercase tracking-wide mb-4">Interaktif / Tatapmuka</h3>
         {simulations.map((module) => <SimCard key={module.slug} user={user} module={module} />)}
         {/* <pre className="pre">{JSON.stringify(simulations, null, 2)}</pre> */}

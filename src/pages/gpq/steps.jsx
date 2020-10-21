@@ -1,4 +1,5 @@
 import { createContext, memo, useContext, useState } from 'react'
+import Link from 'next/link'
 import useUser, { updateUserPath } from 'lib/useUser'
 import fetchJson from 'lib/fetchJson'
 import Layout from "components/Layout";
@@ -301,6 +302,7 @@ function Step() {
       </div>
       <Choices />
       {/* <pre className="pre">{JSON.stringify(seq, null, 2)}</pre> */}
+
     </div>
   )
 }
@@ -317,6 +319,11 @@ function Content() {
       {progress?.touched} : {progress?.done + 1} / {wbSeq} / {element} / {statement}
       </p>
       {/* <pre className="pre my-10">PROGRESS: {JSON.stringify(progress, null, 2)}</pre> */}
+      <p className="text-sm text-center my-8">
+        <Link href="/welcome">
+          <a className="rounded border px-4 py-3 text-blue-600 hover:text-red-600">Back to Home</a>
+        </Link>
+      </p>
     </div>
   )
 }
