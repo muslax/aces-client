@@ -125,7 +125,10 @@ function Content() {
         <br/>
         <p className="text-center my-6">
           <Link href="/intray-ns">
-            <a className="rounded border px-4 py-3 text-blue-600 hover:text-red-600">Coba INTRAY</a>
+            <a className="rounded border mr-4 px-4 py-3 text-blue-600 hover:text-red-600">Coba INTRAY</a>
+          </Link>
+          <Link href="/mate">
+            <a className="rounded border mr-4 px-4 py-3 text-blue-600 hover:text-red-600">Coba GMATE</a>
           </Link>
         </p>
         <br/>

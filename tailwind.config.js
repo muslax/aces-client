@@ -16,6 +16,7 @@ module.exports = {
     margin: ['responsive', 'hover', 'focus'],
     padding: ['responsive', 'hover', 'focus'],
     backgroundOpacity: ['responsive', 'hover'],
+    zIndex: ['responsive', 'hover'],
   },
   plugins: [],
 }

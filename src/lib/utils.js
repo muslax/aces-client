@@ -81,3 +81,15 @@ export function msToTimeString(ms, bSecond = false) {
   if (bSecond) return hours + ":" + minutes + ":" + seconds
   return hours + ":" + minutes
 }
+
+export function mateRandom(seeds) {
+  const keys = shuffle( Object.keys(seeds) )
+  let arr = []
+  keys.forEach(k => {
+    const items = seeds[k]
+    for (let i=0; i<items.length; i++) {
+      arr.push(items[i])
+    }
+  });
+  return arr
+}

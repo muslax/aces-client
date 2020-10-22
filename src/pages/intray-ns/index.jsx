@@ -344,7 +344,7 @@ function TAB0 () {
           startTest(BASE_API_URL, user, progress)
           setTab(1)
           setFurthest(1)
-        }} type="submit" className={btnActive}>Simpan dan lanjutkan</button>
+        }} type="submit" className={btnActive}>Mulai mengerjakan</button>
       </p>
     </div>
   )
